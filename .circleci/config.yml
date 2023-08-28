@@ -16,8 +16,9 @@ jobs:
     steps:
       - checkout
       - run: 
-          name: First test
+          name: First CI Build
           command: |
             echo 'First CI build'
+            python -V
             poetry -V
             
