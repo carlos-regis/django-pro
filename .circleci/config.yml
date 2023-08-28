@@ -1,0 +1,24 @@
+version: 2.1
+
+workflows:
+  build-deploy:
+    jobs:
+      - build
+      - approval:
+          type: approval
+          requires:
+            - build
+
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.11.5
+    steps:
+      - checkout
+      - run: 
+          name: First CI Build
+          command: |
+            echo 'First CI build'
+            python -V
+            poetry -V
+            
