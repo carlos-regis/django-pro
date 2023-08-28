@@ -4,6 +4,10 @@ workflows:
   build-deploy:
     jobs:
       - build
+      - approval:
+          type: approval
+          requires:
+            - build
 
 jobs:
   build:
