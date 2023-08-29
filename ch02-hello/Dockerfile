@@ -1,5 +1,5 @@
 # Pull base python image
-FROM python:3.11.5-slim-bullseye as python-base
+FROM python:3.11.5-slim-bullseye
 
 # Set environment variables
 ENV \
@@ -13,13 +13,13 @@ ENV \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     PIP_ROOT_USER_ACTION=ignore \
-    # Poetry    
-    POETRY_VERSON=1.6.1 \ 
+    # Poetry
+    POETRY_VERSON=1.6.1 \
     POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_CACHE_DIR='/var/cache/pypoetry' \
     POETRY_HOME='/usr/local'
-    
+
 # Path
 # ENV PATH='$POETRY_HOME/bin:$PATH'
 # PYTHONPATH='$PYTHONPATH:.'
@@ -37,14 +37,14 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Work directory
-WORKDIR /code
+WORKDIR /app
 
 # Poetry dependencies
-COPY ../poetry.lock ../pyproject.toml /code/
+COPY ./poetry.lock ./pyproject.toml ./
 
 # Install only the package dependencies here
 RUN poetry config virtualenvs.create false && \
     poetry install --no-cache --no-interaction --no-root --no-ansi
-    
+
 # Copy project
 COPY . .

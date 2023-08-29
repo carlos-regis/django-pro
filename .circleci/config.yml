@@ -15,10 +15,9 @@ jobs:
       - image: cimg/python:3.11.5
     steps:
       - checkout
-      - run: 
+      - run:
           name: First CI Build
           command: |
             echo 'First CI build'
             python -V
             poetry -V
-            
