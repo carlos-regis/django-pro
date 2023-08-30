@@ -1,0 +1,42 @@
+version: '3.9'
+volumes:
+    local_postgres_data:
+      name: ${DJANGO_APP_NAME}_data
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:14.5
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      # Persist the data between container invocations
+      - local_postgres_data:/var/lib/postgresql/data/
+    environment:
+      # - 'POSTGRES_HOST_AUTH_METHOD=trust'
+      - POSTGRES_DB=${DJANGO_APP_NAME}
+      - POSTGRES_USER=${DJANGO_APP_NAME}
+      - POSTGRES_PASSWORD=${DJANGO_APP_NAME}
+  web:
+    container_name: web_container
+    restart: always
+    build: .
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    command: poetry run python manage.py runserver 0.0.0.0:8000
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
+      PGADMIN_DEFAULT_PASSWORD: "${DJANGO_APP_NAME}"
+    ports:
+      - 5050:80
+networks:
+  default:
+    name: "${DJANGO_APP_NAME}_network"
