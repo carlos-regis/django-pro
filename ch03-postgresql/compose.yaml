@@ -14,9 +14,9 @@ services:
       - local_postgres_data:/var/lib/postgresql/data/
     environment:
       # - 'POSTGRES_HOST_AUTH_METHOD=trust'
-      - POSTGRES_DB=${APP_NAME}
-      - POSTGRES_USER=${APP_NAME}
-      - POSTGRES_PASSWORD=${APP_NAME}
+      - POSTGRES_DB=${DJANGO_APP_NAME}
+      - POSTGRES_USER=${DJANGO_APP_NAME}
+      - POSTGRES_PASSWORD=${DJANGO_APP_NAME}
   web:
     container_name: web_container
     restart: always
@@ -34,9 +34,9 @@ services:
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@email.com
-      PGADMIN_DEFAULT_PASSWORD: "${APP_NAME}"
+      PGADMIN_DEFAULT_PASSWORD: "${DJANGO_APP_NAME}"
     ports:
       - '5050:80'
 networks:
   default:
-    name: "${APP_NAME}"
+    name: "${DJANGO_APP_NAME}_network"

@@ -61,7 +61,7 @@ repos:
     rev: 5.12.0
     hooks:
       - id: isort
-        name: isort (python)
+        #name: isort (python)
 
   - repo: https://github.com/pycqa/flake8
     rev: 6.1.0
@@ -82,7 +82,7 @@ repos:
             "-rn", # Only display messages
             "-sn", # Don't display the score
             "--load-plugins=pylint_django",
-            "--django-settings-module=django_project.settings",
+            "--django-settings-module=django_project.settings.django",
             "--ignore=manage.py",
           ]
 
