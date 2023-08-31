@@ -37,7 +37,7 @@ repos:
     hooks:
       ### Automatically fix issues
       - id: end-of-file-fixer
-      - id: check-byte-order-marker
+      - id: fix-byte-order-marker
       - id: mixed-line-ending
         files: "\\.(py|txt|yaml|json|md|toml|lock|cfg|html|sh|js|yml)$"
         args:
