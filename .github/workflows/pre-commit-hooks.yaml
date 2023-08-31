@@ -1,7 +1,5 @@
 name: pre-commit-hooks
-
 on: [push]
-
 jobs:
   build:
     name: Pre-commit hooks
