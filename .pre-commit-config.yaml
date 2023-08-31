@@ -60,7 +60,7 @@ repos:
       - id: detect-private-key
       - id: forbid-submodules
       - id: no-commit-to-branch
-        args: ['--pattern', '^(?!((\d+)\-(fix|feature)\-[a-zA-Z0-9\-]+)$).*']
+        args: ['--pattern', '^(?!((fix|feat|refactor)(\/\d+\-)[\w-]+)$).*']
 
       - id: check-yaml
         args: [--unsafe]
