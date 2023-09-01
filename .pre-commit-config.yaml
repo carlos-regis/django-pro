@@ -57,20 +57,24 @@ repos:
     hooks:
       ### Automatically fix issues
       - id: end-of-file-fixer
+        stages: [commit]
       - id: fix-byte-order-marker
       - id: mixed-line-ending
         files: "\\.(py|txt|yaml|json|md|toml|lock|cfg|html|sh|js|yml)$"
         args:
         - --fix=crlf
       - id: trailing-whitespace
+        stages: [commit]
         args: [ --markdown-linebreak-ext=md ]
         files: "\\.(py|txt|yaml|json|md|toml|lock|cfg|html|sh|js|yml)$"
 
       ### Check for issues
       - id: check-added-large-files
         args: [--enforce-all]
+        stages: [commit]
       - id: check-case-conflict
       - id: check-executables-have-shebangs
+        stages: [commit]
       - id: check-merge-conflict
       - id: check-symlinks
       - id: check-toml
