@@ -4,18 +4,19 @@
 ---
 
 default_install_hook_types:
-  # - commit-msg
-  # - post-checkout
-  # - post-commit
-  # - post-rewrite
+  - commit-msg
+  - post-checkout
+  - post-commit
+  - post-rewrite
   - pre-commit
-  # - pre-push
-  # - prepare-commit-msg
+  - pre-push
+  - prepare-commit-msg
 default_language_version:
     python: python3.11
 default_stages:
   - commit
-  #- push
+  - push
+  - merge-commit
 exclude: .*migrations\/.*|.git
 minimum_pre_commit_version: 3.3.3
 
@@ -41,6 +42,7 @@ repos:
       - id: poetry-check
       - id: poetry-lock
       - id: poetry-install
+        stages: [commit]
 
   ## Markdown
   - repo: https://github.com/frnmst/md-toc
@@ -79,6 +81,7 @@ repos:
       - id: detect-private-key
       - id: forbid-submodules
       - id: no-commit-to-branch
+        stages: [commit]
         args: ['--pattern', '^(?!((fix|feat|refactor)(\/\d+\-)[\w-]+)$).*']
 
       - id: check-yaml
