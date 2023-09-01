@@ -86,3 +86,7 @@ exclude_dirs = ["tests", "settings.py"]
 
 [tool.djlint]
 profile="django"
+
+[tool.codespell]
+write-changes = true
+ignore-words-list = "asend"

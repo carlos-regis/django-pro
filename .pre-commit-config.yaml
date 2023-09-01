@@ -1,20 +1,38 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+
+---
+
 default_install_hook_types:
   - commit-msg
-  - pre-commit
+  - post-checkout
   - post-commit
   - post-rewrite
+  - pre-commit
+  - pre-push
+  - prepare-commit-msg
 default_language_version:
     python: python3.11
 default_stages:
   - commit
   - push
-exclude: '.*migrations\/.*|.git'
+exclude: .*migrations\/.*|.git
 minimum_pre_commit_version: 3.3.3
 
 repos:
   # Automatically fix issues
+
+  ## Codespell - check for common misspellings in files
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.5
+    hooks:
+      - id: codespell
+        language: python
+        types: [ text ]
+        args: [--toml=pyproject.toml]
+        exclude: "poetry.lock"
+        additional_dependencies:
+          - tomli
 
   ## Poetry
   - repo: https://github.com/ScribeMD/pre-commit-hooks
@@ -43,6 +61,7 @@ repos:
         args:
         - --fix=crlf
       - id: trailing-whitespace
+        args: [ --markdown-linebreak-ext=md ]
         files: "\\.(py|txt|yaml|json|md|toml|lock|cfg|html|sh|js|yml)$"
 
       ### Check for issues
@@ -72,10 +91,11 @@ repos:
 
   # Check for issues
 
-  ## Pre-commit
+  ## Pre-commit config
   - repo: meta
     hooks:
       - id: check-useless-excludes
+      # - id: check-hooks-apply
 
   ## Git
   - repo: https://github.com/commitizen-tools/commitizen
@@ -87,14 +107,6 @@ repos:
           - post-commit
           - post-rewrite
           - push
-
-  # - repo: https://github.com/jumanjihouse/pre-commit-hooks
-  #   rev: 3.0.0
-  #   hooks:
-  #     - id: check-mailmap
-  #     - id: forbid-binary
-  #     - id: git-check
-  #     - id: markdownlint
 
   ## CR
   - repo: https://github.com/adamchainz/django-upgrade
@@ -129,7 +141,7 @@ repos:
       - id: checkov
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.286
+    rev: v0.0.287
     hooks:
       - id: ruff
         args: [
@@ -177,3 +189,5 @@ repos:
 
 ci:
   autoupdate_schedule: weekly
+  autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
+  autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
