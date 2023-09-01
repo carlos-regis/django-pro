@@ -105,8 +105,8 @@ repos:
       - id: commitizen-branch
         stages:
           - post-commit
-          - post-rewrite
-          - push
+          # - post-rewrite
+          # - push
 
   ## CR
   - repo: https://github.com/adamchainz/django-upgrade
