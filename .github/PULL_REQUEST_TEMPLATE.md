@@ -1,5 +1,6 @@
-# Fixes # 
+# Fixes Issue # 
 
-## Solution Outline
+## Solutin Outline
+
 
 ## Test Plan
