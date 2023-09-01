@@ -4,13 +4,13 @@
 ---
 
 default_install_hook_types:
-  - commit-msg
-  - post-checkout
-  - post-commit
-  - post-rewrite
+  # - commit-msg
+  # - post-checkout
+  # - post-commit
+  # - post-rewrite
   - pre-commit
-  - pre-push
-  - prepare-commit-msg
+  # - pre-push
+  # - prepare-commit-msg
 default_language_version:
     python: python3.11
 default_stages:
