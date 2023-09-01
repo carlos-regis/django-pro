@@ -1,11 +1,8 @@
-name: Automatically create / update pull request
-
-# run this workflow only on new feature branches, not when they're merged to main
-on:
+name: Create or update a pull request on push
+on: 
   push:
     branches-ignore:
       - "main"
-
 jobs:
   create_pr_repo_sync:
     runs-on: ubuntu-latest
