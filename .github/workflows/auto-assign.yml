@@ -1,4 +1,4 @@
-name: Auto Assign Issues and Pull Requests
+name: Auto Assign Issues and PRs
 on:
   issues:
     types: [opened]
@@ -11,8 +11,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-    - name: 'Auto-assign issue and PR'
-      uses: pozil/auto-assign-issue@v1
+    - uses: pozil/auto-assign-issue@v1
       with:
         abortIfPreviousAssignees: true
         repo-token: ${{ secrets.GITHUB_TOKEN }}
