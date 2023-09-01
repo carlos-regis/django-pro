@@ -15,8 +15,8 @@ default_language_version:
     python: python3.11
 default_stages:
   - commit
-  - push
-  - merge-commit
+  # - push
+  # - merge-commit
 exclude: .*migrations\/.*|.git
 minimum_pre_commit_version: 3.3.3
 
