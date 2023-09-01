@@ -18,7 +18,7 @@ default_stages:
   # - push
   # - merge-commit
 exclude: .*migrations\/.*|.git
-minimum_pre_commit_version: 3.3.3
+minimum_pre_commit_version: 3.2.1
 
 repos:
   # Automatically fix issues
