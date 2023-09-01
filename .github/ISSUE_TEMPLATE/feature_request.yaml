@@ -1,6 +1,7 @@
 name: Feature request
 description:  Suggest a new idea/feature for MarkBind
 labels: ["c.Feature 🚀"]
+assignees: "carlos-regis"
 body:
 - type: dropdown
   id: existing
