@@ -86,7 +86,7 @@ repos:
       - id: forbid-submodules
       - id: no-commit-to-branch
         stages: [commit]
-        args: ['--pattern', '^(?!((fix|feat|refactor)(\/\d+\-)[\w-]+)$).*']
+        args: ['--pattern', '^(?!((fix|feat|refactor|docs)(\/\d+\-)[\w-]+)$).*']
 
       - id: check-yaml
         args: [--unsafe]

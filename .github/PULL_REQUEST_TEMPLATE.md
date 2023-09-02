@@ -1,6 +1,5 @@
 # Fixes Issue # 
 
-
 ## Solutin Outline
 
 
