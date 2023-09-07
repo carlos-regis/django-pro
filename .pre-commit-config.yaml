@@ -106,7 +106,7 @@ repos:
 
   ## Git
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.7.0
+    rev: 3.7.1
     hooks:
       - id: commitizen
       - id: commitizen-branch
@@ -143,7 +143,7 @@ repos:
       - id: djlint-django
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.4.18
+    rev: 2.4.25
     hooks:
       - id: checkov
 
@@ -163,7 +163,7 @@ repos:
       args: [--config=pyproject.toml]
 
   - repo: https://github.com/adamchainz/blacken-docs
-    rev: v1.12.1
+    rev: 1.16.0
     hooks:
     - id: blacken-docs
       additional_dependencies:
