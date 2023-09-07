@@ -13,7 +13,6 @@ services:
       # Persist the data between container invocations
       - local_postgres_data:/var/lib/postgresql/data/
     environment:
-      # - 'POSTGRES_HOST_AUTH_METHOD=trust'
       - POSTGRES_DB=${DJANGO_APP_NAME}
       - POSTGRES_USER=${DJANGO_APP_NAME}
       - POSTGRES_PASSWORD=${DJANGO_APP_NAME}
