@@ -1,0 +1,92 @@
+[tool.poetry]
+name = "django-pro"
+version = "0.1.0"
+description = "Django for Professionals - William Vincent"
+authors = ["Carlos Regis <cr@carlosregis.com>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+psycopg2-binary = "^2.9.7"
+# Django Dependencies
+django = "^4.2.4"
+django-environ = "^0.10.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.3.3"
+black = "^23.7.0"
+ruff = "^0.0.286"
+pylint = "^2.17.5"
+pylint-django = "^2.5.3"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core>=1.6.1",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+# If --exclude is not set, Black will automatically ignore files and
+# directories in .gitignore file(s), if present.
+extend-exclude = '''
+(
+      docs
+    | migrations
+    | /static/CACHE/
+)
+'''
+
+[tool.ruff]
+cache-dir = "~/.cache/ruff"
+fix = true
+target-version = "py311"
+show-fixes = true
+show-source = true
+select = [
+  "A",   # flake8-builtins
+  "B",   # flake8-bugbear
+  "C",   # flake8-comprehensions
+  "E",   # pycodestyle errors
+  "DJ",  # flake8-django
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "PT",  # flake8-pytest-style
+  "PL",  # pylint
+  "Q",   # flake8-quotes
+  "RUF", # ruff
+  "UP",  # pyupgrade
+  "W",   # pycodestyle warnings
+]
+ignore = [
+  "E501",  # line too long, handled by black
+]
+extend-exclude = [
+  "**/migrations/*",
+  "**/static/CACHE/*",
+  "docs",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F403"]
+# "path/to/file.py" = ["E402"]
+# "**/{tests,docs,tools}/*" = ["E402"]
+
+# [tool.ruff.isort]
+# known-third-party = ["fastapi", "pydantic", "starlette"]
+
+[tool.bandit]
+exclude_dirs = ["tests", "settings.py"]
+# tests = ["B201", "B301"]
+# skips = ["B101", "B601"]
+
+[tool.djlint]
+profile="django"
+
+[tool.codespell]
+write-changes = true
+ignore-words-list = "asend"
