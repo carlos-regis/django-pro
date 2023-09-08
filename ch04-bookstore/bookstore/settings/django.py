@@ -22,9 +22,33 @@ TEMPLATE_DEBUG = DEBUG
 SECRET_KEY = env.str("SECRET_KEY")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
-# Application definition
+# Internationalization
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-INSTALLED_APPS = [
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_TZ = True
+
+# Database
+# ------------------------------------------------------------------------------
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DATABASES = {"default": env.db("DATABASE_URL")}
+
+# CACHES
+# ------------------------------------------------------------------------------
+
+# URLS
+# ------------------------------------------------------------------------------
+ROOT_URLCONF = "bookstore.urls"
+WSGI_APPLICATION = "bookstore.wsgi.application"
+
+# APPS
+# ------------------------------------------------------------------------------
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -33,41 +57,23 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+THIRD_PARTY_APPS = []
+
+LOCAL_APPS = [
+    "accounts.apps.AccountsConfig",
 ]
 
-ROOT_URLCONF = "bookstore.urls"
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = "bookstore.wsgi.application"
-
-
-# Database
+# MIGRATIONS
 # ------------------------------------------------------------------------------
 
-DATABASES = {"default": env.db("DATABASE_URL")}
+# AUTHENTICATION
+# ------------------------------------------------------------------------------
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+# PASSWORDS
+# ------------------------------------------------------------------------------
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -87,25 +93,54 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# MIDDLEWARE
+# ------------------------------------------------------------------------------
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
+# STORAGES
+# ------------------------------------------------------------------------------
 STATIC_URL = env.str("STATIC_URL", default="static/")
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+# TEMPLATES
+# ------------------------------------------------------------------------------
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# FIXTURES
+# ------------------------------------------------------------------------------
+
+# SECURITY
+# ------------------------------------------------------------------------------
+
+# EMAIL
+# ------------------------------------------------------------------------------
+
+# ADMIN
+# ------------------------------------------------------------------------------
+
+# LOGGING
+# ------------------------------------------------------------------------------
+
+# SLACK
+# ------------------------------------------------------------------------------
