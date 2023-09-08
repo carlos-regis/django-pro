@@ -16,6 +16,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: First CI Build
+          name: Ruff linting and Black formatting
           command: |
             poetry -V

@@ -39,4 +39,3 @@ jobs:
         #   poetry run black .
         # env:
         #   CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
-        
