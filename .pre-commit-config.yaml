@@ -36,13 +36,13 @@ repos:
         additional_dependencies:
           - tomli
 
-  ## Poetry
-  - repo: https://github.com/python-poetry/poetry
-    rev: 1.6.0
-    hooks:
-      - id: poetry-check
-      - id: poetry-lock
-      # - id: poetry-install
+  # ## Poetry
+  # - repo: https://github.com/python-poetry/poetry
+  #   rev: 1.6.0
+  #   hooks:
+  #     - id: poetry-check
+  #     - id: poetry-lock
+  #     - id: poetry-install
 
   ## Markdown
   - repo: https://github.com/frnmst/md-toc
