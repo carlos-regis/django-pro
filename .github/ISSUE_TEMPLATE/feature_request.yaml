@@ -1,12 +1,13 @@
 name: Feature request
-description:  Suggest a new idea/feature for MarkBind
-labels: ["c.Feature 🚀"]
+description:  Suggest a new idea/feature for this project
+title: "Feature: <Title>"
+labels: ["enhancement"]
 assignees: "carlos-regis"
 body:
 - type: dropdown
   id: existing
   attributes:
-    label: Please confirm that you have searched existing issues in the repo
+    label: Please confirm that you have searched existing issues in the repository
     description: Please search to see if an issue already exists for the request.
     options:
       - 'Yes, I have searched the existing issues'
