@@ -109,11 +109,11 @@ repos:
     rev: 3.8.2
     hooks:
       - id: commitizen
-      - id: commitizen-branch
-        stages:
-          - post-commit
-          # - post-rewrite
-          # - push
+      # - id: commitizen-branch
+      #   stages:
+      #     - post-commit
+      #     - post-rewrite
+      #     - push
 
   ## CR
   - repo: https://github.com/adamchainz/django-upgrade
