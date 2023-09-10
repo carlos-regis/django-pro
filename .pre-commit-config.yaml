@@ -8,6 +8,7 @@ default_install_hook_types:
   # - post-checkout
   # - post-commit
   # - post-rewrite
+  # - post-merge
   - pre-commit
   # - pre-push
   # - prepare-commit-msg
@@ -35,14 +36,13 @@ repos:
         additional_dependencies:
           - tomli
 
-  ## Poetry
-  - repo: https://github.com/ScribeMD/pre-commit-hooks
-    rev: 0.15.8
-    hooks:
-      - id: poetry-check
-      - id: poetry-lock
-      - id: poetry-install
-        stages: [commit]
+  # ## Poetry
+  # - repo: https://github.com/python-poetry/poetry
+  #   rev: 1.6.0
+  #   hooks:
+  #     - id: poetry-check
+  #     - id: poetry-lock
+  #     - id: poetry-install
 
   ## Markdown
   - repo: https://github.com/frnmst/md-toc
@@ -91,7 +91,7 @@ repos:
       - id: check-yaml
         args: [--unsafe]
       - id: pretty-format-json
-        args: [--autofix]
+        args: [--autofix, --no-ensure-ascii, --no-sort-keys]
       - id: check-json
       - id: debug-statements
       - id: check-docstring-first
@@ -106,14 +106,14 @@ repos:
 
   ## Git
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.7.1
+    rev: 3.8.2
     hooks:
       - id: commitizen
-      - id: commitizen-branch
-        stages:
-          - post-commit
-          # - post-rewrite
-          # - push
+      # - id: commitizen-branch
+      #   stages:
+      #     - post-commit
+      #     - post-rewrite
+      #     - push
 
   ## CR
   - repo: https://github.com/adamchainz/django-upgrade
@@ -130,7 +130,7 @@ repos:
       - id: pyproject-fmt
 
   - repo: https://github.com/rstcheck/rstcheck
-    rev: v6.1.2
+    rev: v6.2.0
     hooks:
     - id: rstcheck
       additional_dependencies:
@@ -143,7 +143,7 @@ repos:
       - id: djlint-django
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.4.25
+    rev: 2.4.32
     hooks:
       - id: checkov
 
@@ -157,7 +157,7 @@ repos:
         ]
 
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 23.9.0
     hooks:
     - id: black
       args: [--config=pyproject.toml]
