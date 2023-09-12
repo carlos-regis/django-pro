@@ -11,7 +11,7 @@ env:
   ASSIGNEE: ${{ vars.DEFAULT_ISSUE_ASSIGNEE }}
 
 jobs:
-  auto-assign:
+  auto_assign:
     runs-on: ubuntu-latest
     permissions:
       issues: write
