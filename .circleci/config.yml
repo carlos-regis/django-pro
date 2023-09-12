@@ -1,21 +1,122 @@
 version: 2.1
 
+jobs:
+  requirements:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Requirements check
+          command: |
+            python -V
+            poetry -V
+
+  ruff:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Ruff linting
+          command: |
+            python -V
+            poetry -V
+
+    # executor: *python-executor
+    # steps:
+    #   - checkout
+    #   - python/install-packages:
+    #       pip-dependency-file: requirements.txt
+    #       pkg-manager: pip
+    #   - run: *git-diff-py-files
+    #   - run:
+    #       name: List ruff errors
+    #       command: ruff check . &> lint_checks.txt || true
+    #   - run:
+    #       name: 🧹 Diff-based ruff
+    #       command: *display-lint-errors
+
+  black:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Black style formatting
+          command: |
+            python -V
+            poetry -V
+
+    # executor: *python-executor
+    # steps:
+    #   - checkout
+    #   - checkout
+    #   - python/install-packages:
+    #       pip-dependency-file: requirements.txt
+    #       pkg-manager: pip
+    #   - run: &git-diff-py-files
+    #       name: List added, copied, modified, and renamed *py files
+    #       command: git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
+    #   - run:
+    #       name: List black errors
+    #       command: black . --check &> lint_checks.txt || true
+    #   - run:
+    #       name: 🧹 Diff-based black
+    #       command: &display-lint-errors |
+    #         grep -Ff diff.txt lint_checks.txt > lint_errors.txt || true
+    #         if [ -s lint_errors.txt ]; then
+    #           cat lint_errors.txt
+    #           printf 'Run the following command to fix your branch:\n make fixes'
+    #           exit 1
+    #         fi
+
+  unit-tests:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - run:
+          name: Unit testing
+          command: |
+            python -V
+            poetry -V
+
+  build:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            python -V
+            poetry -V
+
 workflows:
-  build-deploy:
+  # version: 2
+  ci:
+    jobs:
+      - requirements
+
+      - black
+        # name: black style formatting
+        # filters: *ci-filter
+
+      - ruff
+        # name: ruff linting
+        # filters: *ci-filter
+
+      - unit-tests
+          # name: Unit testing
+          # filters: *ci-filter
+        # requires:
+        #   - ruff
+        #   - black
+
+  build:
     jobs:
       - build
       - approval:
           type: approval
           requires:
-            - build
-
-jobs:
-  build:
-    docker:
-      - image: cimg/python:3.11.5
-    steps:
-      - checkout
-      - run:
-          name: Ruff linting and Black formatting
-          command: |
-            poetry -V
+            - ci

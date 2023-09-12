@@ -1,8 +1,15 @@
 name: Create or update a pull request on push
+
 on: 
   push:
     branches-ignore:
       - main
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ASSIGNEE: ${{ vars.DEFAULT_ISSUE_ASSIGNEE }}
+  REVIEWER: ${{ vars.DEFAULT_PR_REVIEWER }}
+
 jobs:
   create_pull_request:
     runs-on: ubuntu-latest
@@ -12,12 +19,12 @@ jobs:
         id: open-pr
         uses: devops-infra/action-pull-request@v0.5.5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: GITHUB_TOKEN
           target_branch: main
           title: "[#] <Feature>: PLACEHOLDER TITLE"
           template: ".github/PULL_REQUEST_TEMPLATE.md"
-          reviewer: ${{ vars.DEFAULT_PR_REVIEWER }}
-          assignee: ${{ vars.DEFAULT_PR_ASSIGNEE }}
+          reviewer: REVIEWER
+          assignee: ASSIGNEE
           draft: true
           #label: "auto-pr"                               # Comma-separated list (no spaces)
           #milestone: "Milestone 1"                       # Milestone name

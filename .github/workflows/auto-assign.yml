@@ -1,9 +1,15 @@
 name: Auto Assign Issues and PRs
+
 on:
   issues:
     types: [opened]
   pull_request:
     types: [opened]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ASSIGNEE: ${{ vars.DEFAULT_ISSUE_ASSIGNEE }}
+
 jobs:
   auto-assign:
     runs-on: ubuntu-latest
@@ -14,5 +20,5 @@ jobs:
     - uses: pozil/auto-assign-issue@v1
       with:
         abortIfPreviousAssignees: true
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        assignees: ${{ vars.DEFAULT_ISSUE_ASSIGNEE }}
+        repo-token: GITHUB_TOKEN
+        assignees: ASSIGNEE
