@@ -132,13 +132,13 @@ workflows:
         # name: black style formatting
         # filters: *ci-filter
           requires:
-            - ruff
+            - linting
 
       - unit-testing:
           # name: Unit testing
           # filters: *ci-filter
           requires:
-            - black
+            - formatting
 
   build:
     jobs:
