@@ -1,4 +1,4 @@
-name: Auto Assign Issues and PRs
+name: assign issues and prs
 
 on:
   issues:
