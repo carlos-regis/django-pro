@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   requirements:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
@@ -14,7 +14,7 @@ jobs:
 
   ruff:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
@@ -39,7 +39,7 @@ jobs:
 
   black:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
@@ -73,7 +73,7 @@ jobs:
 
   unit-tests:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.11
     steps:
       - run:
           name: Unit testing
@@ -83,7 +83,7 @@ jobs:
 
   build:
     docker:
-      - image: cimg/python:3.11.4
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
@@ -98,20 +98,23 @@ workflows:
     jobs:
       - requirements
 
-      - black
-        # name: black style formatting
-        # filters: *ci-filter
-
-      - ruff
+      - ruff:
         # name: ruff linting
         # filters: *ci-filter
+          requires:
+            - requirements
 
-      - unit-tests
+      - black:
+        # name: black style formatting
+        # filters: *ci-filter
+          requires:
+            - ruff
+
+      - unit-tests:
           # name: Unit testing
           # filters: *ci-filter
-        # requires:
-        #   - ruff
-        #   - black
+          requires:
+            - black
 
   build:
     jobs:
