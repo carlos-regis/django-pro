@@ -1,31 +1,56 @@
 version: 2.1
 
-jobs:
-  requirements:
+executors:
+  app-executor:
     docker:
       - image: cimg/python:3.11
+    working_directory: ~/app
+
+aliases:
+  - &show-current-branch
+    run:
+      name: Show Current Branch
+      command: echo ${CIRCLE_BRANCH}
+
+  - &install-dependencies
+    run:
+      name: Install Dependencies
+      command: |
+        poetry install
+        echo "Successfully installed ependencies !"
+
+  - &build-project
+    run:
+      name: Build Project
+      command: |
+        poetry install
+        echo "Build Successful !"
+
+jobs:
+  requirements:
+    executor: app-executor
     steps:
       - checkout
+      - *show-current-branch
+      - *install-dependencies
       - run:
           name: Requirements check
           command: |
             python -V
             poetry -V
 
-  ruff:
-    docker:
-      - image: cimg/python:3.11
+  linting:
+    executor: app-executor
     steps:
       - checkout
+      - *show-current-branch
       - run:
           name: Ruff linting
           command: |
             python -V
             poetry -V
 
-    # executor: *python-executor
     # steps:
-    #   - checkout
     #   - python/install-packages:
     #       pip-dependency-file: requirements.txt
     #       pkg-manager: pip
@@ -37,21 +62,19 @@ jobs:
     #       name: 🧹 Diff-based ruff
     #       command: *display-lint-errors
 
-  black:
-    docker:
-      - image: cimg/python:3.11
+  formatting:
+    executor: app-executor
     steps:
       - checkout
+      - *show-current-branch
       - run:
           name: Black style formatting
           command: |
             python -V
             poetry -V
 
-    # executor: *python-executor
+
     # steps:
-    #   - checkout
-    #   - checkout
     #   - python/install-packages:
     #       pip-dependency-file: requirements.txt
     #       pkg-manager: pip
@@ -71,10 +94,11 @@ jobs:
     #           exit 1
     #         fi
 
-  unit-tests:
-    docker:
-      - image: cimg/python:3.11
+  unit-testing:
+    executor: app-executor
     steps:
+      - checkout
+      - *show-current-branch
       - run:
           name: Unit testing
           command: |
@@ -82,10 +106,10 @@ jobs:
             poetry -V
 
   build:
-    docker:
-      - image: cimg/python:3.11
+    executor: app-executor
     steps:
       - checkout
+      - *show-current-branch
       - run:
           name: Build
           command: |
@@ -98,19 +122,19 @@ workflows:
     jobs:
       - requirements
 
-      - ruff:
+      - linting:
         # name: ruff linting
         # filters: *ci-filter
           requires:
             - requirements
 
-      - black:
+      - formatting:
         # name: black style formatting
         # filters: *ci-filter
           requires:
             - ruff
 
-      - unit-tests:
+      - unit-testing:
           # name: Unit testing
           # filters: *ci-filter
           requires:
