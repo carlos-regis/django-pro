@@ -1,9 +1,9 @@
-name: Bump version
+name: bump version
 
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
