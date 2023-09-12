@@ -119,4 +119,4 @@ workflows:
       - approval:
           type: approval
           requires:
-            - ci
+            - build
