@@ -1,4 +1,4 @@
-name: Create or update a pull request on push
+name: Pull request on push
 
 on: 
   push:
