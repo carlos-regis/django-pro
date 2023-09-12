@@ -94,7 +94,7 @@ jobs:
     #           exit 1
     #         fi
 
-  unit-test:
+  test:
     executor: app-executor
     steps:
       - checkout
@@ -122,19 +122,19 @@ workflows:
     jobs:
       - requirements
 
-      - linting:
+      - lint:
         # name: ruff linting
         # filters: *ci-filter
           requires:
             - requirements
 
-      - formatting:
+      - format:
         # name: black style formatting
         # filters: *ci-filter
           requires:
             - lint
 
-      - unit-testing:
+      - test:
           # name: Unit testing
           # filters: *ci-filter
           requires:

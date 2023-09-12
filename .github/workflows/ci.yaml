@@ -57,7 +57,7 @@ jobs:
         # env:
         #   CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
 
-  unit-test:
+  test:
     runs-on: ubuntu-latest
     needs: [format]
     steps:
@@ -69,7 +69,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [unit-test]
+    needs: [test]
     steps:
       - uses: actions/checkout@v3
       - name: Build
