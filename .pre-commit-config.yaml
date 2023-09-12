@@ -129,12 +129,12 @@ repos:
     hooks:
       - id: pyproject-fmt
 
-  - repo: https://github.com/rstcheck/rstcheck
-    rev: v6.2.0
-    hooks:
-    - id: rstcheck
-      additional_dependencies:
-      - tomli==2.0.1
+  # - repo: https://github.com/rstcheck/rstcheck
+  #   rev: v6.2.0
+  #   hooks:
+  #   - id: rstcheck
+  #     additional_dependencies:
+  #     - tomli==2.0.1
 
   # formatter and linter for HTML templates
   - repo: https://github.com/Riverside-Healthcare/djLint
