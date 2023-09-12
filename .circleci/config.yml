@@ -39,7 +39,7 @@ jobs:
             python -V
             poetry -V
 
-  linting:
+  lint:
     executor: app-executor
     steps:
       - checkout
@@ -62,7 +62,7 @@ jobs:
     #       name: 🧹 Diff-based ruff
     #       command: *display-lint-errors
 
-  formatting:
+  format:
     executor: app-executor
     steps:
       - checkout
@@ -94,7 +94,7 @@ jobs:
     #           exit 1
     #         fi
 
-  unit-testing:
+  unit-test:
     executor: app-executor
     steps:
       - checkout
@@ -132,13 +132,13 @@ workflows:
         # name: black style formatting
         # filters: *ci-filter
           requires:
-            - linting
+            - lint
 
       - unit-testing:
           # name: Unit testing
           # filters: *ci-filter
           requires:
-            - formatting
+            - format
 
   build:
     jobs:

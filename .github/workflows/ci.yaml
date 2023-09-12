@@ -9,8 +9,18 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  ruff:
+  requirements:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Requirements check
+        run: |
+          python -V
+          poetry -V
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: [requirements]
     steps:
       - uses: actions/checkout@v3
     #   - name: Set up Python 3.11
@@ -26,9 +36,9 @@ jobs:
         #   python -m pip install poetry
         #   poetry install 
 
-  black:
+  format:
     runs-on: ubuntu-latest
-    needs: [ruff]
+    needs: [lint]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.11
@@ -47,8 +57,22 @@ jobs:
         # env:
         #   CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
 
-  build:
+  unit-test:
     runs-on: ubuntu-latest
-    needs: [black]
+    needs: [format]
     steps:
       - uses: actions/checkout@v3
+      - name: Unit testing
+        run: |
+          python -V
+          poetry -V
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [unit-test]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          python -V
+          poetry -V
