@@ -1,4 +1,4 @@
-name: Pull request on push
+name: pull request on push
 
 on: 
   push:
