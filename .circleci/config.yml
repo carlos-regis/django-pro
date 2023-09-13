@@ -49,7 +49,7 @@ jobs:
     # executor: app-executor
     executor: &python-executor
       name: python/default
-      tag: 3.11
+      tag: "3.11"
     steps:
       - checkout
       - *install-dev-dependencies
