@@ -13,16 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-      - name: Requirements check
-        run: |
+      - name: Install poetry
+        run: | 
           python -V
           python -m pip install --upgrade pip
           python -m pip install poetry
-          poetry install 
+      - name: Set up Python from Poetry config
+        id: python_version
+        uses: actions/setup-python@v4
+        with:
+          python-version-file: 'pyproject.toml'
+          cache: 'poetry'   # caching poetry dependencies
+      - run: echo '${{ steps.python_version.outputs.python-version }}'
+      - name: Requirements check
+        run: |
+          python -V          
+          poetry install
+          poetry run pytest
 
   lint:
     runs-on: ubuntu-latest
