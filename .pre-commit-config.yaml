@@ -3,7 +3,6 @@ default_language_version:
 exclude: .*migrations\/.*|.git
 minimum_pre_commit_version: 3.2.1
 default_stages: [commit, push]
-fail_fast: true
 
 repos:
   # Automatically fix issues

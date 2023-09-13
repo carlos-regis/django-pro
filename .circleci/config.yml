@@ -123,12 +123,13 @@ workflows:
           name: ⚫ Black formatting
           filters: *ci-filter
           requires:
-            - 🚓 Ruff linting
+            - 🧪 Validate requirements
 
       - test:
           name: 🧪 Unit testing
           filters: *ci-filter
           requires:
+            - 🚓 Ruff linting
             - ⚫ Black formatting
 
   build:

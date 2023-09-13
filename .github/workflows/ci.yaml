@@ -24,7 +24,7 @@ jobs:
       
   lint:
     runs-on: ubuntu-latest
-    # needs: [requirements]
+    needs: [requirements]
     steps:
       - uses: actions/checkout@v4
       - run: python -m pipx install poetry
@@ -42,7 +42,7 @@ jobs:
       
   format:
     runs-on: ubuntu-latest
-    # needs: [lint]
+    needs: [requirements]
     steps:
       - uses: actions/checkout@v4
       - run: python -m pipx install poetry
@@ -62,7 +62,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    # needs: [format]
+    needs: [lint, format]
     steps:
       - uses: actions/checkout@v4
       - run: python -m pipx install poetry
@@ -81,7 +81,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    # needs: [test]
+    needs: [test]
     steps:
       - uses: actions/checkout@v4
       - run: python -m pipx install poetry

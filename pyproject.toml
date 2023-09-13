@@ -52,7 +52,7 @@ extend-exclude = '''
 
 [tool.ruff]
 cache-dir = "~/.cache/ruff"
-fix = false
+fix = true
 target-version = "py311"
 show-fixes = true
 show-source = true
