@@ -20,7 +20,7 @@ jobs:
           cache: 'poetry'   # caching poetry dependencies
           # Warning: poetry cache is not found
       - name: Requirements check
-        run: poetry install
+        run: poetry install --no-interaction
       
   lint:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
           python-version-file: 'pyproject.toml'
           cache: 'poetry'   # caching poetry dependencies
           # Warning: poetry cache is not found
-      - run: poetry install --only dev
+      - run: poetry install --only dev --no-interaction
       - name: Ruff linting
         uses: chartboost/ruff-action@v1
         with:
@@ -52,7 +52,7 @@ jobs:
           python-version-file: 'pyproject.toml'
           cache: 'poetry'   # caching poetry dependencies
           # Warning: poetry cache is not found
-      - run: poetry install --only dev
+      - run: poetry install --only dev --no-interaction
       - name: Black style formatting
         uses: psf/black@stable
         with:
