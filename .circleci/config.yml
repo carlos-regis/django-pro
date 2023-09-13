@@ -109,7 +109,7 @@ workflows:
   ci:
     jobs:
       - requirements:
-          name: Validate requirements
+          name: 🧪 Validate requirements
           filters: &ci-filter
             branches:
               ignore: main
@@ -117,22 +117,22 @@ workflows:
               ignore: /.*/
 
       - lint:
-          name: Ruff linting
+          name: 🚓 Ruff linting
           filters: *ci-filter
           requires:
-            - requirements
+            - 🧪 Validate requirements
 
       - format:
-          name: black style formatting
+          name: ⚫ Black formatting
           filters: *ci-filter
           requires:
-            - lint
+            - 🚓 Ruff linting
 
       - test:
-          name: Unit testing
+          name: 🧪 Unit testing
           filters: *ci-filter
           requires:
-            - format
+            - ⚫ Black formatting
 
   build:
     jobs:
