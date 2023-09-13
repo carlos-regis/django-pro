@@ -112,7 +112,7 @@ repos:
       - id: djlint-django
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.4.32
+    rev: 2.4.33
     hooks:
       - id: checkov
 
@@ -121,13 +121,6 @@ repos:
     hooks:
       - id: ruff
         args: [
-          --check,
-          --config=pyproject.toml,
-          --verbose
-        ]
-      - id: ruff-format
-        args: [
-          --check,
           --config=pyproject.toml,
           --verbose
         ]
