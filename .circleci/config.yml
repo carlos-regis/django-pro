@@ -83,7 +83,7 @@ jobs:
             poetry -V
             poetry run black . --check --diff --color --config=pyproject.toml &> lint_checks.txt || true
       - run:
-          name: 🧹 Diff-based black
+          name: Diff-based black
           command: *display-lint-errors
 
   test:
