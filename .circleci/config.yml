@@ -27,8 +27,7 @@ aliases:
   - &build-project
     run:
       name: Build Project
-      command: |
-        poetry install
+      command: poetry install
 
 jobs:
   requirements:
@@ -47,56 +46,40 @@ jobs:
     steps:
       - checkout
       - *install-dev-dependencies
+      - run: &git-diff-py-files
+          name: List added, copied, modified, and renamed *py files
+          command: git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
       - run:
           name: Ruff linting
           command: |
             python -V
             poetry -V
-            poetry run ruff check --config=pyproject.toml .
-
-    # steps:
-    #   - python/install-packages:
-    #       pip-dependency-file: requirements.txt
-    #       pkg-manager: pip
-    #   - run: *git-diff-py-files
-    #   - run:
-    #       name: List ruff errors
-    #       command: ruff check . &> lint_checks.txt || true
-    #   - run:
-    #       name: 🧹 Diff-based ruff
-    #       command: *display-lint-errors
+            poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
+      - run:
+          name: Diff-based ruff
+          command: &display-lint-errors |
+            grep -Ff diff.txt lint_checks.txt > lint_errors.txt || true
+            if [ -s lint_errors.txt ]; then
+              cat lint_errors.txt
+              printf 'Run the following command to fix your branch:\n make fixes'
+              exit 1
+            fi
 
   format:
     executor: app-executor
     steps:
       - checkout
       - *install-dev-dependencies
+      - run: *git-diff-py-files
       - run:
           name: Black style formatting
           command: |
             python -V
             poetry -V
-            poetry run black . --check --diff --color --config=pyproject.toml
-
-    # steps:
-    #   - python/install-packages:
-    #       pip-dependency-file: requirements.txt
-    #       pkg-manager: pip
-    #   - run: &git-diff-py-files
-    #       name: List added, copied, modified, and renamed *py files
-    #       command: git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
-    #   - run:
-    #       name: List black errors
-    #       command: black . --check &> lint_checks.txt || true
-    #   - run:
-    #       name: 🧹 Diff-based black
-    #       command: &display-lint-errors |
-    #         grep -Ff diff.txt lint_checks.txt > lint_errors.txt || true
-    #         if [ -s lint_errors.txt ]; then
-    #           cat lint_errors.txt
-    #           printf 'Run the following command to fix your branch:\n make fixes'
-    #           exit 1
-    #         fi
+            poetry run black . --check --diff --color --config=pyproject.toml &> lint_checks.txt || true
+      - run:
+          name: 🧹 Diff-based black
+          command: *display-lint-errors
 
   test:
     executor: app-executor
