@@ -16,15 +16,14 @@ jobs:
       - name: Install poetry
         run: | 
           python -V
-          python -m pip install --upgrade pip
-          python -m pip install poetry
+          python -m pipx install poetry
       - name: Set up Python from Poetry config
-        id: python_version
+        id: python_upgrade
         uses: actions/setup-python@v4
         with:
           python-version-file: 'pyproject.toml'
           cache: 'poetry'   # caching poetry dependencies
-      - run: echo '${{ steps.python_version.outputs.python-version }}'
+      - run: echo '${{ steps.python_upgrade.outputs.python-version }}'
       - name: Requirements check
         run: |
           python -V          
