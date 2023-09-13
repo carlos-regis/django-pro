@@ -56,8 +56,7 @@ jobs:
       - name: Black style formatting
         uses: psf/black@stable
         with:
-          options: --color --config=pyproject.toml --verbose
-        # run: poetry run black .
+          options: "--check --diff --color --config=pyproject.toml"
         # env:
         #   CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
 

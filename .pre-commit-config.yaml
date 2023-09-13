@@ -125,11 +125,16 @@ repos:
           --verbose
         ]
 
-  - repo: https://github.com/psf/black
+  - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 23.9.1
     hooks:
     - id: black
-      args: [--config=pyproject.toml]
+      args: [
+        --check,
+        --diff,
+        --color,
+        --config=pyproject.toml
+      ]
 
   - repo: https://github.com/adamchainz/blacken-docs
     rev: 1.16.0
