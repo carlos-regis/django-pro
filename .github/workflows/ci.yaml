@@ -31,6 +31,8 @@ jobs:
           poetry -V      
           poetry install
           poetry run pytest
+          echo "$(poetry env info --path)/bin" >> $GITHUB_PATH
+      - uses: jakebailey/pyright-action@v1
 
   lint:
     runs-on: ubuntu-latest
