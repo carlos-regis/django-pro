@@ -51,10 +51,7 @@ jobs:
           command: git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
       - run:
           name: Ruff linting
-          command: |
-            python -V
-            poetry -V
-            poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
+          command: poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
       - run:
           name: Diff-based ruff
           command: &display-lint-errors |
