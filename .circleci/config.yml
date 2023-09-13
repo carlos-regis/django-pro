@@ -39,13 +39,12 @@ jobs:
     executor: app-executor
     steps:
       - checkout
-      - *show-current-branch
       - run:
           name: Ruff linting
           command: |
             python -V
             poetry -V
-            poetry run black --check --diff --color --config=pyproject.toml
+            poetry run ruff check --config=pyproject.toml .
 
     # steps:
     #   - python/install-packages:
@@ -63,7 +62,6 @@ jobs:
     executor: app-executor
     steps:
       - checkout
-      - *show-current-branch
       - run:
           name: Black style formatting
           command: |
@@ -95,7 +93,6 @@ jobs:
     executor: app-executor
     steps:
       - checkout
-      - *show-current-branch
       - run:
           name: Unit testing
           command: |
@@ -106,7 +103,6 @@ jobs:
     executor: app-executor
     steps:
       - checkout
-      - *show-current-branch
       - run:
           name: Build
           command: |
