@@ -13,8 +13,10 @@ psycopg2-binary = "^2.9.7"
 django = "^4.2.4"
 django-environ = "^0.10.0"
 
+[tool.poetry.group.dev]
+optional = true
+
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.3.3"
 black = "^23.7.0"
 ruff = "^0.0.286"
 pylint-django = "^2.5.3"

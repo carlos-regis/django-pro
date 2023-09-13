@@ -1,25 +1,8 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
-
----
-
-default_install_hook_types:
-  # - commit-msg
-  # - post-checkout
-  # - post-commit
-  # - post-rewrite
-  # - post-merge
-  - pre-commit
-  # - pre-push
-  # - prepare-commit-msg
 default_language_version:
-    python: python3.11
-default_stages:
-  - commit
-  # - push
-  # - merge-commit
+  python: python3.11
 exclude: .*migrations\/.*|.git
 minimum_pre_commit_version: 3.2.1
+default_stages: [commit, push]
 
 repos:
   # Automatically fix issues
@@ -35,14 +18,6 @@ repos:
         exclude: "poetry.lock"
         additional_dependencies:
           - tomli
-
-  # ## Poetry
-  # - repo: https://github.com/python-poetry/poetry
-  #   rev: 1.6.0
-  #   hooks:
-  #     - id: poetry-check
-  #     - id: poetry-lock
-  #     - id: poetry-install
 
   ## Markdown
   - repo: https://github.com/frnmst/md-toc
@@ -129,13 +104,6 @@ repos:
     hooks:
       - id: pyproject-fmt
 
-  - repo: https://github.com/rstcheck/rstcheck
-    rev: v6.2.0
-    hooks:
-    - id: rstcheck
-      additional_dependencies:
-      - tomli==2.0.1
-
   # formatter and linter for HTML templates
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: v1.32.1
@@ -143,24 +111,28 @@ repos:
       - id: djlint-django
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.4.32
+    rev: 2.4.33
     hooks:
       - id: checkov
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.287
+    rev: v0.0.289
     hooks:
       - id: ruff
         args: [
           --config=pyproject.toml,
-          --verbose
         ]
 
-  - repo: https://github.com/psf/black
+  - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 23.9.1
     hooks:
     - id: black
-      args: [--config=pyproject.toml]
+      args: [
+        --check,
+        --diff,
+        --color,
+        --config=pyproject.toml
+      ]
 
   - repo: https://github.com/adamchainz/blacken-docs
     rev: 1.16.0
@@ -182,19 +154,6 @@ repos:
     hooks:
     - id: gitlint
 
-#   - repo: https://github.com/pre-commit/mirrors-mypy
-#     rev: v1.5.1
-#     hooks:
-#       - id: mypy
-#         exclude: ^tests/
-#         args: [
-#           --strict,
-#           --config-file=pyproject.toml
-#         ]
-#         additional_dependencies:
-#           - pytest==7.1.2
-
 ci:
-  autoupdate_schedule: weekly
-  autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
-  autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
+  autofix_prs: false
+  autofix_commit_msg: 🎨 [pre-commit.ci] auto fixes from pre-commit.com hooks
