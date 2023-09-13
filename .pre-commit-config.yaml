@@ -123,7 +123,6 @@ repos:
         args: [
           check,
           --config=pyproject.toml,
-          --force-exclude,
           --verbose
         ]
 

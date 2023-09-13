@@ -72,7 +72,7 @@ jobs:
           python-version-file: 'pyproject.toml'
           cache: 'poetry'   # caching poetry dependencies
           # Warning: poetry cache is not found
-      - run: poetry install --only dev
+      - run: poetry install --only dev --no-interaction
       - name: Unit testing
         run: |
           python -V
@@ -91,7 +91,7 @@ jobs:
           python-version-file: 'pyproject.toml'
           cache: 'poetry'   # caching poetry dependencies
           # Warning: poetry cache is not found
-      - run: poetry install --only dev
+      - run: poetry install
       - name: Build
         run: |
           python -V

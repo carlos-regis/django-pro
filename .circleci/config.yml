@@ -11,17 +11,24 @@ executors:
 aliases:
   - &install-dependencies
     run:
-      name: Install Dependencies
-      command: |
-        poetry install
-        echo "Successfully installed ependencies !"
+      name: Install dependencies
+      command: poetry install
+
+  - &install-dev-dependencies
+    run:
+      name: Install dev dependencies
+      command: poetry install --only dev
+
+  - &install-test-dependencies
+    run:
+      name: Install test dependencies
+      command: poetry install --only test
 
   - &build-project
     run:
       name: Build Project
       command: |
         poetry install
-        echo "Build Successful !""
 
 jobs:
   requirements:
@@ -39,6 +46,7 @@ jobs:
     executor: app-executor
     steps:
       - checkout
+      - *install-dev-dependencies
       - run:
           name: Ruff linting
           command: |
@@ -62,6 +70,7 @@ jobs:
     executor: app-executor
     steps:
       - checkout
+      - *install-dev-dependencies
       - run:
           name: Black style formatting
           command: |
@@ -93,6 +102,8 @@ jobs:
     executor: app-executor
     steps:
       - checkout
+      #- *install-test-dependencies
+      - *install-dev-dependencies
       - run:
           name: Unit testing
           command: |
@@ -103,6 +114,7 @@ jobs:
     executor: app-executor
     steps:
       - checkout
+      - *install-dependencies
       - run:
           name: Build
           command: |
