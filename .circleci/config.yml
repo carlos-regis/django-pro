@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  python: circleci/python@2.1.1
+
 executors:
   app-executor:
     docker:
@@ -34,7 +37,8 @@ jobs:
     executor: app-executor
     steps:
       - checkout
-      - *install-dependencies
+      - python/install-packages:
+          pkg-manager: poetry
       - run:
           name: Requirements check
           command: |
@@ -42,7 +46,10 @@ jobs:
             poetry -V
 
   lint:
-    executor: app-executor
+    # executor: app-executor
+    executor: &python-executor
+      name: python/default
+      #tag: 3.10.12
     steps:
       - checkout
       - *install-dev-dependencies
@@ -63,7 +70,8 @@ jobs:
             fi
 
   format:
-    executor: app-executor
+    # executor: app-executor
+    executor: *python-executor
     steps:
       - checkout
       - *install-dev-dependencies
@@ -79,11 +87,12 @@ jobs:
           command: *display-lint-errors
 
   test:
-    executor: app-executor
+    # executor: app-executor
+    executor: *python-executor
     steps:
       - checkout
-      #- *install-test-dependencies
-      - *install-dev-dependencies
+      - python/install-packages:
+          pkg-manager: poetry
       - run:
           name: Unit testing
           command: |
@@ -102,7 +111,6 @@ jobs:
             poetry -V
 
 workflows:
-  # version: 2
   ci:
     jobs:
       - requirements:
