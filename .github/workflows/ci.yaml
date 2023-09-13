@@ -16,7 +16,9 @@ jobs:
       - name: Requirements check
         run: |
           python -V
-          # poetry -V
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install 
 
   lint:
     runs-on: ubuntu-latest
