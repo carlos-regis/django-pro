@@ -20,16 +20,6 @@ repos:
         additional_dependencies:
           - tomli
 
-  - repo: https://github.com/python-poetry/poetry
-    rev: 1.6.1
-    hooks:
-    - id: poetry-check
-    - id: poetry-lock
-    # - id: poetry-export
-    - id: poetry-install
-      stages:
-        - post-checkout
-
   ## Markdown
   - repo: https://github.com/frnmst/md-toc
     rev: 8.2.0
@@ -171,4 +161,3 @@ repos:
 ci:
   autofix_prs: false
   autofix_commit_msg: 🎨 [pre-commit.ci] auto fixes from pre-commit.com hooks
-  skip: [poetry-check, poetry-lock, poetry-install]
