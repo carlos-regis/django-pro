@@ -7,6 +7,15 @@ default_stages: [commit, push]
 repos:
   # Automatically fix issues
 
+  ## Poetry
+  - repo: https://github.com/python-poetry/poetry
+    rev: 1.6.1
+    hooks:
+      - id: poetry-check
+      - id: poetry-lock
+        args: [--no-update]
+      # - id: poetry-install
+
   ## Codespell - check for common misspellings in files
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.5

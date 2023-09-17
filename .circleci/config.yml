@@ -42,10 +42,7 @@ jobs:
       - python/install-packages:
           pkg-manager: poetry
       - run:
-          command: |
-            python -V
-            poetry -V
-            poetry check
+          command: poetry check
 
 #   requirements:
 #     executor: app-executor
