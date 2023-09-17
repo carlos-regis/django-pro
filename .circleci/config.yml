@@ -12,10 +12,10 @@ orbs:
 #     working_directory: ~/app
 
 aliases:
-  - &install-dependencies
-    run:
-      name: Install dependencies
-      command: poetry install
+  # - &install-dependencies
+  #   run:
+  #     name: Install dependencies
+  #     command: poetry install
 
   - &install-dev-dependencies
     run:
@@ -41,11 +41,9 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: poetry
-      - *install-dependencies
       - run:
           command: |
             poetry check
-
 
 #   lint:
 #     executor: &python-executor
@@ -81,7 +79,7 @@ jobs:
       - *install-dev-dependencies
       - run:
           command: |
-            poetry run black --version
+            poetry run black --check --diff --color --config=pyproject.toml
 
 
 #   code-format:
@@ -136,7 +134,10 @@ workflows:
 #           requires:
 #             - Validate requirements
       - black:
-          name: Black formatting
+          name: Black code formatting
+          requires:
+            - Validate requirements
+
 #       - format:
 #           name: Black formatting
 #           filters: *ci-filter
