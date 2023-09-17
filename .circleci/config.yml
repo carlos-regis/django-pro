@@ -12,10 +12,10 @@ orbs:
 #     working_directory: ~/app
 
 aliases:
-#   - &install-dependencies
-#     run:
-#       name: Install dependencies
-#       command: poetry install
+  - &install-dependencies
+    run:
+      name: Install dependencies
+      command: poetry install
 
   - &install-dev-dependencies
     run:
@@ -41,10 +41,10 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: poetry
-      - *install-dev-dependencies
+      - *install-dependencies
       - run:
           command: |
-            poetry run black --version
+            poetry check
 
 
 #   lint:
@@ -78,9 +78,10 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: poetry
+      - *install-dev-dependencies
       - run:
           command: |
-            poetry install --only dev
+            poetry run black --version
 
 
 #   code-format:
