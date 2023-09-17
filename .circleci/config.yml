@@ -42,17 +42,9 @@ jobs:
       - python/install-packages:
           pkg-manager: poetry
       - run:
-          command: poetry check
-
-#   requirements:
-#     executor: app-executor
-#     steps:
-#       - checkout
-#       - python/install-packages:
-#           pkg-manager: poetry
-#       - run:
-#           name: Requirements check
-#           command: poetry check
+          command: |
+            poetry check
+            poetry lock --no-update
 
 #   lint:
 #     executor: &python-executor
@@ -79,14 +71,14 @@ jobs:
 #               exit 1
 #             fi
 
-#   format:
+#   code-format:
 #     executor: *python-executor
 #     steps:
 #       - checkout
 #       - *install-dev-dependencies
 #       - run: *git-diff-py-files
 #       - run:
-#           name: Black style formatting
+#           name: Black code formatting
 #           command: |
 #             poetry run black --check --diff --color --config=pyproject.toml . &> lint_checks.txt || true
 #       - run:
