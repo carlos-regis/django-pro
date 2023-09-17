@@ -45,6 +45,17 @@ jobs:
           command: |
             poetry check
 
+  lint:
+    executor: *python-executor
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: poetry
+      - *install-dev-dependencies
+      - run:
+          command: |
+             poetry run ruff check --config=pyproject.toml .
+
 #   lint:
 #     executor: &python-executor
 #       name: python/default
@@ -70,7 +81,7 @@ jobs:
 #               exit 1
 #             fi
 
-  black:
+  format:
     executor: *python-executor
     steps:
       - checkout
@@ -81,7 +92,7 @@ jobs:
           command: |
             poetry run black --check --diff --color --config=pyproject.toml .
 
-#   code-format:
+#   format:
 #     executor: *python-executor
 #     steps:
 #       - checkout
@@ -127,21 +138,17 @@ workflows:
 #             tags:
 #               ignore: /.*/
 
-#       - lint:
-#           name: Ruff linting
-#           filters: *ci-filter
-#           requires:
-#             - Validate requirements
-      - black:
-          name: Black code formatting
+      - lint:
+          name: Ruff linting
+#         filters: *ci-filter
           requires:
             - Validate requirements
 
-#       - format:
-#           name: Black formatting
-#           filters: *ci-filter
-#           requires:
-#             - Validate requirements
+      - format:
+          name: Black code formatting
+#         filters: *ci-filter
+          requires:
+            - Validate requirements
 
 #       - test:
 #           name: Unit testing
