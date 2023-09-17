@@ -79,8 +79,7 @@ jobs:
       - *install-dev-dependencies
       - run:
           command: |
-            poetry run black --check --diff --color --config=pyproject.toml
-
+            poetry run black --check --diff --color --config=pyproject.toml .
 
 #   code-format:
 #     executor: *python-executor
