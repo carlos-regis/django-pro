@@ -25,6 +25,7 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
+            pwd
             poetry check
 
   lint:
