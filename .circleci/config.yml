@@ -56,16 +56,10 @@ jobs:
           name: List added, copied, modified, and renamed *py files
           command: |
             git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
-            if [ -s diff.txt ]; then
-              cat diff.txt
-            fi
       - run:
           name: Ruff linting
           command: |
             poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
-            if [ -s lint_checks.txt ]; then
-              cat lint_checks.txt
-            fi
       - run:
           name: Diff-based ruff
           command: &display-lint-errors |
@@ -83,20 +77,11 @@ jobs:
       - python/install-packages:
           args: "--no-interaction --no-root --only dev"
           pkg-manager: poetry
-      - run: 
-          command: |
-            *git-diff-py-files
-            if [ -s diff.txt ]; then
-              cat diff.txt
-            fi
+      - run: *git-diff-py-files
       - run:
           name: Black code formatting
           command: |
             poetry run black --check --diff --color --config=pyproject.toml . &> lint_checks.txt || true
-            if [ -s lint_checks.txt ]; then
-              cat lint_checks.txt
-            fi
-
       - run:
           name: Diff-based black
           command: *display-lint-errors
