@@ -71,9 +71,9 @@ jobs:
     executor: *python-executor
     steps:
       - checkout
-      - python/install-packages:
-          args: "--no-interaction --no-root --only dev"
-          pkg-manager: poetry
+      # - python/install-packages:
+      #     args: "--no-interaction --no-root --only dev"
+      #     pkg-manager: poetry
       - run: *git-diff-py-files
       - run:
           name: Black code formatting
@@ -87,9 +87,9 @@ jobs:
     executor: *python-executor
     steps:
       - checkout
-      - python/install-packages:
-          args: "--no-interaction --no-root --only test"
-          pkg-manager: poetry
+      # - python/install-packages:
+      #     args: "--no-interaction --no-root --only test"
+      #     pkg-manager: poetry
       - run:
           command: |
             poetry run pytest << pipeline.parameters.app_dir >>
