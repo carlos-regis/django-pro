@@ -36,7 +36,7 @@ jobs:
       - checkout
       - python/install-packages:
           app-dir: ./ch04-bookstore
-          args: "install --no ansi --no-interacton --no-root"
+          args: "--no-interacton --no-root"
           pkg-manager: poetry
       - run:
           command: |
