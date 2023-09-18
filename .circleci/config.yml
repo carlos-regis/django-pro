@@ -40,11 +40,11 @@ jobs:
             echo $HOME
             pwd
             poetry check
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - app
-            - env
+      # - persist_to_workspace:
+      #     root: /home/circleci
+      #     paths:
+      #       - app
+      #       - env
 
   lint:
     executor: *python-executor
