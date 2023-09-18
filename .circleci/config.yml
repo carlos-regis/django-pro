@@ -49,10 +49,12 @@ jobs:
   lint:
     executor: *python-executor
     steps:
-      - checkout
-      - python/install-packages:
-          args: "--no-interaction --no-root --only dev"
-          pkg-manager: poetry
+      # - checkout
+      # - python/install-packages:
+      #     args: "--no-interaction --no-root --only dev"
+      #     pkg-manager: poetry
+      - attach_workspace:
+          at: /home/circleci/project
       - run: &git-diff-py-files
           name: List added, copied, modified, and renamed *py files
           command: |
