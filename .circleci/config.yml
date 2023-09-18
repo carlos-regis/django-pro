@@ -19,7 +19,7 @@ jobs:
     executor: &python-executor
       name: python/default
       tag: "3.11"
-      app-dir: ~/app
+      working_directory: ~/app
     steps:
       - checkout
       - python/install-packages:
