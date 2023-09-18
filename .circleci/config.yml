@@ -112,15 +112,38 @@ jobs:
             - project
             - env
 
-#   build:
-#     executor: app-executor
-#     steps:
-#       - checkout
-#       - *install-dependencies
-#       - run:
-#           name: Build
-#           command: |
-#             python -V
+  build:
+    executor: app-executor
+    steps:
+      - *fast-checkout
+      - setup_remote_docker  
+      - run:
+          name: Build Django image
+          command: |
+            set -ex
+            cd /tmp/workspace/project
+            source /tmp/workspace/env
+            docker build -t $DJANGO_APP_NAME/django:$IMAGE_TAG .
+            mkdir -p /tmp/workspace/image
+            docker save -o /tmp/workspace/image/django.tar $DJANGO_APP_NAME/django:$IMAGE_TAG
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - image/django.tar
+
+  push:
+    executor: app-executor
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Push django image
+          command: |
+            source /tmp/workspace/env
+            docker load -i /tmp/workspace/image/django.tar
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push $DJANGO_APP_NAME/django:$IMAGE_TAG
 
 workflows:
   ci:
@@ -152,10 +175,13 @@ workflows:
 
       - persist-checkout
 
-#   build:
-#     jobs:
-#       - build
-#       - approval:
-#           type: approval
-#           requires:
-#             - build
+      - build:
+          requires:
+            - persist-checkout
+      - approval:
+          type: approval
+          requires:
+            - build
+      - push:
+          requires:
+            - approval
