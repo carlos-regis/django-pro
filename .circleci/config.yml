@@ -11,10 +11,7 @@ orbs:
 #       # ubuntu 22.04.2 LTS | python3 3.11.5 | poetry 1.6.1
 #     working_directory: ~/app
 
-aliases:
-- &app_directory
-  working_directory: ./ch04-bookstore
-
+# aliases:
 
 jobs:
   requirements:
@@ -93,7 +90,7 @@ jobs:
           args: "--no-interaction --no-root --only test"
           pkg-manager: poetry
       - run:
-          working_directory: *app_directory
+          working_directory: ./ch04-bookstore
           command: |
             poetry run pytest
       - store_test_results:
