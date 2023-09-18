@@ -16,14 +16,17 @@ parameters:
     type: string
     default: ch04-bookstore
 
-# aliases:
-#   - &app_dir ch04-bookstore
+aliases:
+  - &python-executor
+      name: python/default
+      tag: "3.11"
 
 jobs:
   requirements:
-    executor: &python-executor
-      name: python/default
-      tag: "3.11"
+    executor: *python-executor
+    # executor: &python-executor
+    #   name: python/default
+    #   tag: "3.11"
     steps:
       - checkout
       - python/install-packages:
@@ -31,7 +34,7 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            echo "APP_DIR=ch04-bookstore" >> $HOME/env
+            # echo "APP_DIR=ch04-bookstore" >> $HOME/env
             # $HOME = /home/circleci
             # pwd = /home/circleci/project
             echo $HOME
