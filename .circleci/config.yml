@@ -53,6 +53,7 @@ jobs:
       # - python/install-packages:
       #     args: "--no-interaction --no-root --only dev"
       #     pkg-manager: poetry
+      - run: cat ./ch04-bookstore/manage.py
       - run: &git-diff-py-files
           name: List added, copied, modified, and renamed *py files
           command: |
@@ -78,6 +79,7 @@ jobs:
       # - python/install-packages:
       #     args: "--no-interaction --no-root --only dev"
       #     pkg-manager: poetry
+      - run: cat ./ch04-bookstore/manage.py
       - run: *git-diff-py-files
       - run:
           name: Black code formatting
@@ -94,6 +96,7 @@ jobs:
       # - python/install-packages:
       #     args: "--no-interaction --no-root --only test"
       #     pkg-manager: poetry
+      - run: cat ./ch04-bookstore/manage.py
       - run:
           command: |
             poetry run pytest << pipeline.parameters.app_dir >>
