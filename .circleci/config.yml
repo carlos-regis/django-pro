@@ -3,13 +3,15 @@ version: 2.1
 orbs:
   python: circleci/python@2.1.1
 
-# executors:
-#   app-executor:
-#     docker:
-#       - image: cimg/python:3.11
-#       # @ 13-Sep-23:
-#       # ubuntu 22.04.2 LTS | python3 3.11.5 | poetry 1.6.1
-#     working_directory: ~/app
+executors:
+  app-executor:
+    docker:
+      # @ 13-Sep-23: ubuntu 22.04.2 LTS | python3 3.11.5 | poetry 1.6.1
+      - image: cimg/python:3.11
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+    working_directory: ~/app
 
 parameters:
   app_dir:
@@ -21,12 +23,10 @@ aliases:
       name: python/default
       tag: "3.11"
 
+
 jobs:
   requirements:
     executor: *python-executor
-    # executor: &python-executor
-    #   name: python/default
-    #   tag: "3.11"
     steps:
       - checkout
       - python/install-packages:
@@ -53,29 +53,23 @@ jobs:
       - python/install-packages:
           args: "--no-interaction --no-root --only dev"
           pkg-manager: poetry
-      - run:
+      - run: &git-diff-py-files
+          name: List added, copied, modified, and renamed *py files
           command: |
-             poetry run ruff check --config=pyproject.toml .
-
-#   lint:
-#     steps:
-#       - run: &git-diff-py-files
-#           name: List added, copied, modified, and renamed *py files
-#           command: |
-#             git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
-#       - run:
-#           name: Ruff linting
-#           command: |
-#             poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
-#       - run:
-#           name: Diff-based ruff
-#           command: &display-lint-errors |
-#             grep -Ff diff.txt lint_checks.txt > lint_errors.txt || true
-#             if [ -s lint_errors.txt ]; then
-#               cat lint_errors.txt
-#               printf 'Run the following command to fix your branch:\n make fixes'
-#               exit 1
-#             fi
+            git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
+      - run:
+          name: Ruff linting
+          command: |
+            poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
+      - run:
+          name: Diff-based ruff
+          command: &display-lint-errors |
+            grep -Ff diff.txt lint_checks.txt > lint_errors.txt || true
+            if [ -s lint_errors.txt ]; then
+              cat lint_errors.txt
+              printf 'Run the following command to fix your branch:\n make fixes'
+              exit 1
+            fi
 
   format:
     executor: *python-executor
@@ -84,20 +78,14 @@ jobs:
       - python/install-packages:
           args: "--no-interaction --no-root --only dev"
           pkg-manager: poetry
+      - run: *git-diff-py-files
       - run:
+          name: Black code formatting
           command: |
-            poetry run black --check --diff --color --config=pyproject.toml .
-
-#   format:
-#     steps:
-#       - run: *git-diff-py-files
-#       - run:
-#           name: Black code formatting
-#           command: |
-#             poetry run black --check --diff --color --config=pyproject.toml . &> lint_checks.txt || true
-#       - run:
-#           name: Diff-based black
-#           command: *display-lint-errors
+            poetry run black --check --diff --color --config=pyproject.toml . &> lint_checks.txt || true
+      - run:
+          name: Diff-based black
+          command: *display-lint-errors
 
   test:
     executor: *python-executor
@@ -108,7 +96,6 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            echo << pipeline.parameters.app_dir >>
             poetry run pytest << pipeline.parameters.app_dir >>
       - store_test_results:
           path: .
