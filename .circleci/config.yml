@@ -12,20 +12,15 @@ orbs:
 #     working_directory: ~/app
 
 aliases:
-  # - &install-dependencies
-  #   run:
-  #     name: Install dependencies
-  #     command: poetry install
-
   - &install-dev-dependencies
     run:
       name: Install dev dependencies
       command: poetry install --only dev
 
-#   - &install-test-dependencies
-#     run:
-#       name: Install test dependencies
-#       command: poetry install --only test
+  - &install-test-dependencies
+    run:
+      name: Install test dependencies
+      command: poetry install --only test
 
 #   - &build-project
 #     run:
@@ -57,12 +52,7 @@ jobs:
              poetry run ruff check --config=pyproject.toml .
 
 #   lint:
-#     executor: &python-executor
-#       name: python/default
-#       tag: "3.11"
 #     steps:
-#       - checkout
-#       - *install-dev-dependencies
 #       - run: &git-diff-py-files
 #           name: List added, copied, modified, and renamed *py files
 #           command: |
@@ -93,10 +83,7 @@ jobs:
             poetry run black --check --diff --color --config=pyproject.toml .
 
 #   format:
-#     executor: *python-executor
 #     steps:
-#       - checkout
-#       - *install-dev-dependencies
 #       - run: *git-diff-py-files
 #       - run:
 #           name: Black code formatting
@@ -106,16 +93,17 @@ jobs:
 #           name: Diff-based black
 #           command: *display-lint-errors
 
-#   test:
-#     executor: *python-executor
-#     steps:
-#       - checkout
-#       - python/install-packages:
-#           pkg-manager: poetry
-#       - run:
-#           name: Unit testing
-#           command: |
-#             python -V
+  test:
+    executor: *python-executor
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: poetry
+      - run:
+          command: |
+            poetry run pytest -V
+      - store_test_results:
+          path: .
 
 #   build:
 #     executor: app-executor
@@ -145,17 +133,17 @@ workflows:
             - Validate requirements
 
       - format:
-          name: Black code formatting
+          name: Black formatting
 #         filters: *ci-filter
           requires:
             - Validate requirements
 
-#       - test:
-#           name: Unit testing
-#           filters: *ci-filter
-#           requires:
-#             - Ruff linting
-#             - Black formatting
+      - test:
+          name: Unit testing
+          # filters: *ci-filter
+          requires:
+            - Ruff linting
+            - Black formatting
 
 #   build:
 #     jobs:
