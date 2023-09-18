@@ -11,7 +11,9 @@ orbs:
 #       # ubuntu 22.04.2 LTS | python3 3.11.5 | poetry 1.6.1
 #     working_directory: ~/app
 
-# aliases:
+aliases:
+  - &app_dir ch04-bookstore
+
 
 jobs:
   requirements:
@@ -25,6 +27,8 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
+            # $HOME = /home/circleci
+            # pwd = /home/circleci/project
             echo $HOME
             pwd
             poetry check
@@ -90,9 +94,9 @@ jobs:
           args: "--no-interaction --no-root --only test"
           pkg-manager: poetry
       - run:
-          working_directory: ./ch04-bookstore
           command: |
-            poetry run pytest
+            echo *app_dir
+            poetry run pytest *app_dir
       - store_test_results:
           path: .
 
