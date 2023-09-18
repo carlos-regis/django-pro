@@ -55,7 +55,9 @@ jobs:
       #     pkg-manager: poetry
       - attach_workspace:
           at: /home/circleci/
-      - run: cat ./ch04-bookstore/manage.py
+      - run: |
+          cat ./ch04-bookstore/manage.py
+          poetry run ruff check --config=pyproject.toml .
       - run: &git-diff-py-files
           name: List added, copied, modified, and renamed *py files
           command: |
