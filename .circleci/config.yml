@@ -12,16 +12,6 @@ orbs:
 #     working_directory: ~/app
 
 # aliases:
-  # - &install-dev-dependencies
-  #   run:
-  #     name: Install dev dependencies
-  #     command: poetry install --only dev
-
-  # - &install-test-dependencies
-  #   run:
-  #     name: Install test dependencies
-  #     command: poetry install --only test
-
 #   - &build-project
 #     run:
 #       name: Build Project
@@ -35,7 +25,6 @@ jobs:
     steps:
       - checkout
       - python/install-packages:
-          app-dir: ./ch04-bookstore
           args: "--no-interaction --no-root"
           pkg-manager: poetry
       - run:
@@ -47,10 +36,8 @@ jobs:
     steps:
       - checkout
       - python/install-packages:
-          app-dir: ./ch04-bookstore
           args: "--no-interaction --no-root --only dev"
           pkg-manager: poetry
-      # - *install-dev-dependencies
       - run:
           command: |
              poetry run ruff check --config=pyproject.toml .
@@ -80,10 +67,8 @@ jobs:
     steps:
       - checkout
       - python/install-packages:
-          app-dir: ./ch04-bookstore
           args: "--no-interaction --no-root --only dev"
           pkg-manager: poetry
-      # - *install-dev-dependencies
       - run:
           command: |
             poetry run black --check --diff --color --config=pyproject.toml .
