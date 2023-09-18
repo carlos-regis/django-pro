@@ -11,15 +11,15 @@ orbs:
 #       # ubuntu 22.04.2 LTS | python3 3.11.5 | poetry 1.6.1
 #     working_directory: ~/app
 
-aliases:
-  - &app_dir ch04-bookstore
-
+# aliases:
+#   - &app_dir ch04-bookstore
 
 jobs:
   requirements:
     executor: &python-executor
       name: python/default
       tag: "3.11"
+      app-dir: ~/app
     steps:
       - checkout
       - python/install-packages:
@@ -27,11 +27,17 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
+            echo "APP_DIR=ch04-bookstore" >> $HOME/env
             # $HOME = /home/circleci
             # pwd = /home/circleci/project
             echo $HOME
             pwd
             poetry check
+      - persist_to_workspace:
+          root: $HOME
+          paths:
+            - app
+            - env
 
   lint:
     executor: *python-executor
@@ -95,8 +101,8 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            echo *app_dir
-            poetry run pytest *app_dir
+            echo $APP_DIR
+            poetry run pytest $APP_DIR
       - store_test_results:
           path: .
 
