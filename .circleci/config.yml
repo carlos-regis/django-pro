@@ -37,6 +37,7 @@ jobs:
           command: |
             # $HOME = /home/circleci
             # pwd = /home/circleci/project
+            cat ./ch04-bookstore/manage.py
             echo $HOME
             pwd
             poetry check
