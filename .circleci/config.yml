@@ -10,7 +10,6 @@ executors:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
-    working_directory: ~/project
 
 parameters:
   app_dir:
@@ -36,6 +35,10 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
+            # $HOME = /home/circleci
+            # pwd = /home/circleci/project
+            echo $HOME
+            pwd
             poetry check
       - persist_to_workspace:
           root: /home/circleci
@@ -97,15 +100,11 @@ jobs:
           path: .
 
   persist-checkout:
-    executor: *python-executor
+    executor: app-executor
     steps:
       - checkout
       - run:
           command: |
-            # $HOME = /home/circleci
-            # pwd = /home/circleci/project
-            echo $HOME
-            pwd
             echo "IMAGE_TAG=$(echo `git log -n1 --format="%h"`)" >> $HOME/env
       - persist_to_workspace:
           root: /home/circleci
