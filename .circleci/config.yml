@@ -33,7 +33,7 @@ jobs:
             pwd
             poetry check
       - persist_to_workspace:
-          root: $HOME
+          root: /home/circleci
           paths:
             - app
             - env
