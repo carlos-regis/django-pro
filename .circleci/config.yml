@@ -31,7 +31,7 @@ jobs:
     steps:
       - checkout
       - python/install-packages:
-          args: "--no-interaction --no-root --with dev,test"
+          args: "--no-interaction --no-root"
           pkg-manager: poetry
       - run:
           command: |
@@ -50,10 +50,9 @@ jobs:
     executor: *python-executor
     steps:
       - checkout
-      # - python/install-packages:
-      #     args: "--no-interaction --no-root --only dev"
-      #     pkg-manager: poetry
-      - run: cat ./ch04-bookstore/manage.py
+      - python/install-packages:
+          args: "--no-interaction --no-root --only dev"
+          pkg-manager: poetry
       - run: &git-diff-py-files
           name: List added, copied, modified, and renamed *py files
           command: |
@@ -76,10 +75,9 @@ jobs:
     executor: *python-executor
     steps:
       - checkout
-      # - python/install-packages:
-      #     args: "--no-interaction --no-root --only dev"
-      #     pkg-manager: poetry
-      - run: cat ./ch04-bookstore/manage.py
+      - python/install-packages:
+          args: "--no-interaction --no-root --only dev"
+          pkg-manager: poetry
       - run: *git-diff-py-files
       - run:
           name: Black code formatting
@@ -93,10 +91,9 @@ jobs:
     executor: *python-executor
     steps:
       - checkout
-      # - python/install-packages:
-      #     args: "--no-interaction --no-root --only test"
-      #     pkg-manager: poetry
-      - run: cat ./ch04-bookstore/manage.py
+      - python/install-packages:
+          args: "--no-interaction --no-root --only test"
+          pkg-manager: poetry
       - run:
           command: |
             poetry run pytest << pipeline.parameters.app_dir >>
