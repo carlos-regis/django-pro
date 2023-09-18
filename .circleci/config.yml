@@ -106,7 +106,7 @@ jobs:
       - run:
           command: |
             echo << pipeline.parameters.app_dir >>
-            poetry run pytest $APP_DIR
+            poetry run pytest << pipeline.parameters.app_dir >>
       - store_test_results:
           path: .
 
