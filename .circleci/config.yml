@@ -10,7 +10,7 @@ executors:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
-    working_directory: ~/app
+    working_directory: ~/project
 
 parameters:
   app_dir:
@@ -22,6 +22,9 @@ aliases:
       name: python/default
       tag: "3.11"
 
+fast-checkout: &fast-checkout
+  attach_workspace:
+    at: /tmp/workspace
 
 jobs:
   requirements:
@@ -33,17 +36,17 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            # echo "APP_DIR=ch04-bookstore" >> $HOME/env
             # $HOME = /home/circleci
             # pwd = /home/circleci/project
             echo $HOME
             pwd
             poetry check
-      # - persist_to_workspace:
-      #     root: /home/circleci
-      #     paths:
-      #       - app
-      #       - env
+            echo "IMAGE_TAG=$(echo `git log -n1 --format="%h"`)" >> $HOME/env
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - env
 
   lint:
     executor: *python-executor
