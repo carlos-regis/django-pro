@@ -35,6 +35,8 @@ jobs:
     steps:
       - checkout
       - python/install-packages:
+          app-dir: ./ch04-bookstore
+          args: "install --no ansi --no-interacton --no-root"
           pkg-manager: poetry
       - run:
           command: |
@@ -102,7 +104,7 @@ jobs:
       - *install-test-dependencies
       - run:
           command: |
-            poetry run pytest ch04-bookstore
+            poetry run pytest
       - store_test_results:
           path: .
 
