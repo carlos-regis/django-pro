@@ -54,7 +54,7 @@ jobs:
       #     args: "--no-interaction --no-root --only dev"
       #     pkg-manager: poetry
       - attach_workspace:
-          at: /home/circleci/project
+          at: /home/circleci/
       - run: &git-diff-py-files
           name: List added, copied, modified, and renamed *py files
           command: |
