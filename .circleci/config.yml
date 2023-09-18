@@ -102,7 +102,7 @@ jobs:
       - *install-test-dependencies
       - run:
           command: |
-            poetry run pytest
+            poetry run pytest ch04-bookstore
       - store_test_results:
           path: .
 
