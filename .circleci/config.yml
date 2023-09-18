@@ -31,7 +31,7 @@ jobs:
     steps:
       - checkout
       - python/install-packages:
-          args: "--no-interaction --no-root"
+          args: "--no-interaction --no-root --with dev"
           pkg-manager: poetry
       - run:
           command: |
@@ -45,7 +45,6 @@ jobs:
           root: /home/circleci
           paths:
             - project
-
 
   lint:
     executor: *python-executor
