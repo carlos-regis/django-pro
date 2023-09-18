@@ -99,6 +99,7 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: poetry
+      - *install-test-dependencies
       - run:
           command: |
             poetry run pytest -V
