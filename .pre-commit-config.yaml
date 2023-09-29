@@ -4,6 +4,10 @@ exclude: .*migrations\/.*|.git
 minimum_pre_commit_version: 3.2.1
 default_stages: [commit, push]
 
+ci:
+  autofix_prs: false
+  autofix_commit_msg: 🎨 [pre-commit.ci] auto fixes from pre-commit.com hooks
+
 repos:
   # Automatically fix issues
 
@@ -88,6 +92,12 @@ repos:
       - id: check-useless-excludes
       # - id: check-hooks-apply
 
+  ## CircleCI
+  - repo: https://github.com/zahorniak/pre-commit-circleci.git
+    rev: v0.6
+    hooks:
+    - id: circleci_validate
+
   ## Git
   - repo: https://github.com/commitizen-tools/commitizen
     rev: 3.8.2
@@ -125,8 +135,8 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.0.289
     hooks:
-      - id: ruff
-        args: [--config=pyproject.toml]
+    - id: ruff
+      args: [--config=pyproject.toml]
 
   - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 23.9.1
@@ -153,7 +163,3 @@ repos:
     rev: v0.19.1
     hooks:
     - id: gitlint
-
-ci:
-  autofix_prs: false
-  autofix_commit_msg: 🎨 [pre-commit.ci] auto fixes from pre-commit.com hooks

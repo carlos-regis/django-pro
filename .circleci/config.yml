@@ -116,7 +116,7 @@ jobs:
     executor: app-executor
     steps:
       - *fast-checkout
-      - setup_remote_docker  
+      - setup_remote_docker
       - run:
           name: Build Django image
           command: |
@@ -178,10 +178,12 @@ workflows:
       - build:
           requires:
             - persist-checkout
+
       - approval:
           type: approval
           requires:
             - build
+
       - push:
           requires:
             - approval
