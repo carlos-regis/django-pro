@@ -20,6 +20,12 @@ repos:
         args: [--no-update]
       # - id: poetry-install
 
+  ## CircleCI
+  - repo: https://github.com/zahorniak/pre-commit-circleci.git
+    rev: v0.6
+    hooks:
+    - id: circleci_validate
+
   ## Codespell - check for common misspellings in files
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.5
