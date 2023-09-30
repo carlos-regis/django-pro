@@ -17,7 +17,7 @@ parameters:
     default: ch04-bookstore
   app_name:
     type: string
-    default: django_pro
+    default: django-pro
 
 aliases:
   - &python-executor
@@ -177,12 +177,9 @@ workflows:
       #       - Ruff linting
       #       - Black formatting
 
-      - persist-checkout          
+      - persist-checkout
 
       - build:
-          context:
-            - Common Env
-
           requires:
             - persist-checkout
 
