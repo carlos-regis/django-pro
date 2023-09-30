@@ -15,6 +15,9 @@ parameters:
   app_dir:
     type: string
     default: ch04-bookstore
+  app_name:
+    type: string
+    default: django_pro
 
 aliases:
   - &python-executor
@@ -95,7 +98,7 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            docker-composer exec web poetry run pytest << pipeline.parameters.app_dir >>
+            poetry run pytest << pipeline.parameters.app_dir >>
       - store_test_results:
           path: .
 
@@ -123,13 +126,14 @@ jobs:
             set -ex
             cd /tmp/workspace/project
             source /tmp/workspace/env
-            docker build -t $DJANGO_APP_NAME/django:$IMAGE_TAG .
+            docker build -t $DOCKER_USER/<< pipeline.parameters.app_dir >>:$IMAGE_TAG .
+            docker images -a
             mkdir -p /tmp/workspace/image
-            docker save -o /tmp/workspace/image/django.tar $DJANGO_APP_NAME/django:$IMAGE_TAG
+            docker save -o /tmp/workspace/image/<< pipeline.parameters.app_dir >>.tar $DOCKER_USER/<< pipeline.parameters.app_dir >>:$IMAGE_TAG
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - image/django.tar
+            - image/<< pipeline.parameters.app_dir >>.tar
 
   push:
     executor: app-executor
@@ -141,9 +145,9 @@ jobs:
           name: Push django image
           command: |
             source /tmp/workspace/env
-            docker load -i /tmp/workspace/image/django.tar
+            docker load -i /tmp/workspace/image/<< pipeline.parameters.app_dir >>.tar
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push $DJANGO_APP_NAME/django:$IMAGE_TAG
+            docker push $DOCKER_USER/<< pipeline.parameters.app_dir >>:$IMAGE_TAG
 
 workflows:
   ci:
@@ -173,9 +177,11 @@ workflows:
             - Ruff linting
             - Black formatting
 
-      - persist-checkout
+      - persist-checkout          
 
       - build:
+          context:
+            - Common Env
           requires:
             - persist-checkout
 
@@ -185,5 +191,7 @@ workflows:
             - build
 
       - push:
+          context:
+            - Common Env
           requires:
             - approval
