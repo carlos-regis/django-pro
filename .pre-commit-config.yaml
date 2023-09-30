@@ -106,7 +106,7 @@ repos:
 
   ## Git
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.8.2
+    rev: 3.10.0
     hooks:
       - id: commitizen
       # - id: commitizen-branch
@@ -117,7 +117,7 @@ repos:
 
   ## CR
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: 1.14.1
+    rev: 1.15.0
     hooks:
     -   id: django-upgrade
         args: [--target-version, "4.2"]
@@ -129,17 +129,17 @@ repos:
 
   # formatter and linter for HTML templates
   - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.32.1
+    rev: v1.34.0
     hooks:
       - id: djlint-django
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.4.33
+    rev: 2.4.48
     hooks:
       - id: checkov
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.289
+    rev: v0.0.291
     hooks:
     - id: ruff
       args: [--config=pyproject.toml]
