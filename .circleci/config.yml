@@ -17,7 +17,7 @@ parameters:
     default: ch04-bookstore
   app_name:
     type: string
-    default: django
+    default: django-pro
 
 aliases:
   - &python-executor
@@ -180,6 +180,8 @@ workflows:
       - persist-checkout
 
       - build:
+          context:
+            - Common Env
           requires:
             - persist-checkout
 
