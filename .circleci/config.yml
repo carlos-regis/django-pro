@@ -15,6 +15,9 @@ parameters:
   app_dir:
     type: string
     default: ch04-bookstore
+  app_name:
+    type: string
+    default: django-pro
 
 aliases:
   - &python-executor
@@ -123,14 +126,14 @@ jobs:
             set -ex
             cd /tmp/workspace/project
             source /tmp/workspace/env
-            docker build -t $DOCKER_USER/$DJANGO_APP_NAME:$IMAGE_TAG .
+            docker build -t $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG .
             docker images -a
             mkdir -p /tmp/workspace/image
-            docker save -o /tmp/workspace/image/$DJANGO_APP_NAME.tar $DOCKER_USER/$DJANGO_APP_NAME:$IMAGE_TAG
+            docker save -o /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - image/$DJANGO_APP_NAME.tar
+            - image/<< pipeline.parameters.app_name >>.tar
 
   push:
     executor: app-executor
@@ -142,9 +145,9 @@ jobs:
           name: Push django image
           command: |
             source /tmp/workspace/env
-            docker load -i /tmp/workspace/image/$DJANGO_APP_NAME.tar
+            docker load -i /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push $DOCKER_USER/$DJANGO_APP_NAME:$IMAGE_TAG
+            docker push $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG
 
 workflows:
   ci:
