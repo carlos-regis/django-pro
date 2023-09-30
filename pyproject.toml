@@ -56,7 +56,7 @@ extend-exclude = '''
 
 [tool.ruff]
 cache-dir = "~/.cache/ruff"
-fix = true
+fix = false
 target-version = "py311"
 show-fixes = true
 show-source = true
@@ -79,9 +79,6 @@ extend-exclude = [
 "__init__.py" = ["F403"]
 # "path/to/file.py" = ["E402"]
 # "**/{tests,docs,tools}/*" = ["E402"]
-
-[tool.ruff.flake8-quotes]
-inline-quotes = 'single'
 
 [tool.ruff.pep8-naming]
 ignore-names = [
