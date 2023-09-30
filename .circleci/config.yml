@@ -95,7 +95,7 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            poetry run pytest << pipeline.parameters.app_dir >>
+            docker-composer exec web poetry run pytest << pipeline.parameters.app_dir >>
       - store_test_results:
           path: .
 
