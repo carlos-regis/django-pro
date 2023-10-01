@@ -147,18 +147,21 @@ jobs:
           command: |
             mkdir -p $TEST_RESULTS
             cd $WORKSPACE_DIR/project/$APP_DIR
-            echo "*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose up -d --build
-            docker compose exec web pwd && ls -la
-            docker compose exec web python -V
+            docker compose exec web python -V && python -m django --version
+
             echo "*** Running tests with docker compose exec, poetry, and django unittest..."
             docker compose exec web poetry run python manage.py test
+
             echo "*** Running tests with docker compose run and pytest..."
             docker compose run --rm web pytest ch04-bookstore
+
             echo "*** Running tests with docker compose exec, poetry, and pytest..."
             docker compose exec web poetry run pytest
+
             echo "*** Running tests with docker compose run and manage.py test..."
             docker compose run --rm web manage.py test
+
             echo "*** Running tests with EXEC..."
             docker compose down
       - store_artifacts:
