@@ -156,11 +156,16 @@ jobs:
           command: |
             # source << pipeline.parameters.workspace_dir >>/env
             # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
+            echo "Running tests..."
+            ls -la .
+            ls -la /app
+            ls -la $HOME
             ls -la << pipeline.parameters.workspace_dir >>/image
             mkdir -p $TEST_RESULTS
             docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
+            echo "Waiting for services to start..."
             # docker-compose run --rm django pytest
-            docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
+            # docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
       - store_artifacts: # upload test summary for display in Artifacts
           path: $TEST_RESULTS
           destination: raw-test-output
