@@ -9,7 +9,7 @@ x-logging:
 
 volumes:
     db-data:
-      name: "${DJANGO_APP_NAME}-data"
+      name: ${DJANGO_APP_NAME}-data
 
 services:
   postgres:
@@ -57,4 +57,4 @@ services:
 
 networks:
   default:
-    name: "${DJANGO_APP_NAME}-network"
+    name: ${DJANGO_APP_NAME}-network

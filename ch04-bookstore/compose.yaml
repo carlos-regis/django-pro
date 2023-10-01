@@ -1,25 +1,39 @@
 version: '3.9'
+
+x-logging:
+  &default-logging
+  options:
+    max-size: '12m'
+    max-file: '5'
+  driver: json-file
+
 volumes:
-    local_postgres_data:
-      name: ${DJANGO_APP_NAME}_data
+    db-data:
+      name: ${DJANGO_APP_NAME}-data
+
 services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres-container
     image: postgres:14.5
+    logging: *default-logging
     restart: always
     ports:
-      - '5432:5432'
+      - 5432:5432
     volumes:
       # Persist the data between container invocations
-      - local_postgres_data:/var/lib/postgresql/data/
+      - db-data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=${DJANGO_APP_NAME}
       - POSTGRES_USER=${DJANGO_APP_NAME}
       - POSTGRES_PASSWORD=${DJANGO_APP_NAME}
+
   web:
-    container_name: web_container
+    container_name: web-container
+    logging: *default-logging
     restart: always
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     volumes:
@@ -27,15 +41,20 @@ services:
     ports:
       - 8000:8000
     command: poetry run python /app/manage.py runserver 0.0.0.0:8000
+
   pgadmin:
-    container_name: pgadmin4_container
+    container_name: pgadmin4-container
     image: dpage/pgadmin4
+    logging: *default-logging
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@email.com
-      PGADMIN_DEFAULT_PASSWORD: "${DJANGO_APP_NAME}"
+      PGADMIN_DEFAULT_PASSWORD: ${DJANGO_APP_NAME}
+    depends_on:
+      - postgres
     ports:
       - 5050:80
+
 networks:
   default:
-    name: "${DJANGO_APP_NAME}_network"
+    name: ${DJANGO_APP_NAME}-network
