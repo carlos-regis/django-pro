@@ -117,6 +117,9 @@ jobs:
 
     parallelism: 2
 
+    environment:
+      TEST_RESULTS: /tmp/test-results
+
     steps:
       - *fast-checkout
       - setup_remote_docker:
@@ -126,10 +129,10 @@ jobs:
       - run:
           name: Unit tests
           command: |
-            mkdir -p $WORKSPACE_DIR/test_results
+            mkdir -p $TEST_RESULTS
             cd $WORKSPACE_DIR/project
             ls -la
-            cd $APP_DIR
+            cd $APP_DIR && pwd && ls -la
             echo "*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose -f $DOCKER_COMPOSE_FILE up -d
             docker compose -f $DOCKER_COMPOSE_FILE exec web ls -la
@@ -144,10 +147,10 @@ jobs:
             echo "*** Running tests with EXEC..."
             docker compose -f $DOCKER_COMPOSE_FILE down
       - store_artifacts:
-          path: $WORKSPACE_DIR/test_results
+          path: $TEST_RESULTS
           destination: raw-test-output
       - store_test_results:
-          path: $WORKSPACE_DIR/test_results
+          path: $TEST_RESULTS
 
   build:
     executor: app-executor
