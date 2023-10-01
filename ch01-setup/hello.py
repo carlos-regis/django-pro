@@ -1,1 +1,2 @@
-print("Hello, World!")  # noqa: INP001, T201, D100
+# noqa: INP001
+print("Hello, World!")  # noqa: T201, D100
