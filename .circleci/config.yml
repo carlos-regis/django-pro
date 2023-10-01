@@ -150,6 +150,7 @@ jobs:
             DJANGO_APP_NAME=$APP_NAME docker compose up -d
             docker compose exec web poetry -V
             docker compose exec web poetry install --with test,dev
+
             #docker compose exec web poetry run python -m django --version
 
             echo "*** Running tests with docker compose exec, poetry, and django unittest..."
