@@ -149,9 +149,8 @@ jobs:
             cd $WORKSPACE_DIR/project/$APP_DIR
             DJANGO_APP_NAME=$APP_NAME docker compose up -d --build
             docker compose exec web poetry -V
-            docker compose exec web poetry run python -m django --version
-
-
+            docker compose exec web poetry install --with test,dev
+            #docker compose exec web poetry run python -m django --version
 
             echo "*** Running tests with docker compose exec, poetry, and django unittest..."
             docker compose exec web poetry run python manage.py test
