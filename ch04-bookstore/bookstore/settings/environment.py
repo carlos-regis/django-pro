@@ -4,12 +4,12 @@ import environ
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False)  # noqa: COM812
+    DEBUG=(bool, False),
 )
-env.prefix = "DJANGO_"  # noqa: Q000
+env.prefix = "DJANGO_"
 
 site_root = environ.Path(__file__) - 3  # Root of the project
 
-env_file = site_root(".env")  # noqa: Q000
+env_file = site_root(".env")
 if Path.exists(env_file):  # pragma: no cover
     environ.Env.read_env(env_file=env_file)

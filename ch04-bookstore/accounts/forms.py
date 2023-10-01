@@ -8,8 +8,8 @@ class CustomUserCreationForm(UserCreationForm):  # noqa: D101
     class Meta:  # noqa: D106
         model = CustomUser
         fields = (
-            'email',
-            'username',
+            "email",
+            "username",
         )
 
 
@@ -17,6 +17,6 @@ class CustomUserChangeForm(UserChangeForm):  # noqa: D101
     class Meta:  # noqa: D106
         model = CustomUser
         fields = (
-            'email',
-            'username',
+            "email",
+            "username",
         )

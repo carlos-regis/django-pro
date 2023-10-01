@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):  # noqa: D101
     form = CustomUserChangeForm
     model = CustomUser
     list_display = [  # noqa: RUF012
-        'email',
-        'username',
-        'is_superuser',
+        "email",
+        "username",
+        "is_superuser",
     ]
