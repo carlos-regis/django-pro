@@ -149,8 +149,7 @@ jobs:
             cd $WORKSPACE_DIR/project/$APP_DIR
             echo "*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose up -d --build
-            docker-compose exec web pwd
-            docker-compose exec web ls -la /
+            docker-compose exec web pwd && ls -la
             docker-compose exec web poetry -V
             echo "*** Running tests with docker compose exec, poetry, and django unittest..."
             docker-compose -f $DOCKER_COMPOSE_FILE exec web poetry run python manage.py test
