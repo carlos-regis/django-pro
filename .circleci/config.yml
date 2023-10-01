@@ -21,6 +21,9 @@ parameters:
   workspace_dir:
     type: string
     default: /tmp/workspace
+  docker_compose_config_file:
+    type: string
+    default: << pipeline.parameters.workspace_dir >>/project/compose.yaml
 
 aliases:
   - &python-executor
@@ -119,22 +122,21 @@ jobs:
       - run:
           name: Unit tests
           command: |
-            pwd
             mkdir -p << pipeline.parameters.workspace_dir >>/test_results
-            ls -la
             ls -la << pipeline.parameters.workspace_dir >>/project
-            cat << pipeline.parameters.workspace_dir >>/project/compose.yaml
+            echo << pipeline.parameters.docker_compose_config_file >>
             echo "Docker compose config parsed..."
-            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml config
+            DJANGO_APP_NAME=<< pipeline.parameters.app_name >> docker compose -f << pipeline.parameters.docker_compose_config_file >> config
             echo "Waiting for services to start..."
-            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
-            docker compose exec ls -la
+            docker compose -f << pipeline.parameters.docker_compose_config_file >> up -d
+            docker compose -f << pipeline.parameters.docker_compose_config_file >> exec ls -la
             echo "Running tests with docker compose run and pytest..."
-            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml run --rm web pytest
-             echo "Running tests with docker compose run and manage.py test..."
-            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml run --rm web manage.py test
+            docker compose -f << pipeline.parameters.docker_compose_config_file >> run --rm web pytest
+            echo "Running tests with docker compose run and manage.py test..."
+            docker compose -f << pipeline.parameters.docker_compose_config_file >> run --rm web manage.py test
             echo "Running tests with EXEC..."
-            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml exec web poetry run pytest
+            docker compose -f << pipeline.parameters.docker_compose_config_file >> exec web poetry run pytest
+            docker compose -f << pipeline.parameters.docker_compose_config_file >> down
       - store_artifacts: # upload test summary for display in Artifacts
           path: << pipeline.parameters.workspace_dir >>/test_results
           destination: raw-test-output
