@@ -146,7 +146,7 @@ jobs:
           command: |
             source /tmp/workspace/env
             docker load -i /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar
-            echo "$DOCKER_PASS" | docker login -u $DOCKER_USER -p --password-stdin
+            echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
             docker push $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG
 
 workflows:
