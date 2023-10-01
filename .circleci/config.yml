@@ -14,7 +14,7 @@ executors:
         default: /tmp/workspace
       docker-compose-file:
         type: string
-        default: /tmp/workspace/project/compose.yaml
+        default: compose.yaml
       app-dir:
         type: string
         default: "ch04-bookstore"
@@ -126,14 +126,15 @@ jobs:
       - run:
           name: Unit tests
           command: |
-            pwd
             mkdir -p $WORKSPACE_DIR/test_results
-            ls -la $WORKSPACE_DIR/project
+            cd $WORKSPACE_DIR/project
+            ls -la
+            cd $APP_DIR
             echo "*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose -f $DOCKER_COMPOSE_FILE up -d
             docker compose -f $DOCKER_COMPOSE_FILE exec web ls -la
             echo "*** App directory: $APP_DIR ..."
-            docker-compose exec web poetry run python manage.py test
+            docker-compose -f $DOCKER_COMPOSE_FILE exec web poetry run python manage.py test
             echo "*** Running tests with docker compose run and pytest..."
             docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest ch04-bookstore
             echo "*** Running tests with docker compose exec, poetry, and pytest..."
