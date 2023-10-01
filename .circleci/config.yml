@@ -9,20 +9,20 @@ executors:
       app-name:
         type: string
         default: django-pro
-      app-dir:
-        type: string
-        default: ch04-bookstore
-      docker-compose-file:
-        type: string
-        default: /tmp/workspace/project/compose.yaml
       workspace-dir:
         type: string
         default: /tmp/workspace
+      docker-compose-file:
+        type: string
+        default: /tmp/workspace/project/compose.yaml
+      app-dir:
+        type: string
+        default: ch04-bookstore
     environment:
-      APP_NAME: << pipeline.app-name >>
-      APP_DIR: << pipeline.app-dir >>
-      DOCKER_COMPOSE_FILE: << pipeline.docker-compose-file >>
-      WORKSPACE_DIR: << pipeline.workspace-dir >>
+      WORKSPACE_DIR: << parameters.workspace-dir >>
+      APP_NAME: << parameters.app-name >>
+      APP_DIR: << parameters.app-dir >>
+      DOCKER_COMPOSE_FILE: << parameters.docker-compose-file >>
     docker:
       - image: cimg/python:3.11
         auth:
@@ -122,11 +122,11 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - attach_workspace:
-          at: ${WORKSPACE_DIR}
+          at: $WORKSPACE_DIR
       - run:
           name: Unit tests
           command: |
-            echo "Workspace directory: ${WORKSPACE_DIR}"
+            echo "Workspace directory: $WORKSPACE_DIR"
             mkdir -p $WORKSPACE_DIR/test_results
             ls -la $WORKSPACE_DIR/project
             echo "Compose file: $DOCKER_COMPOSE_FILE"
@@ -136,11 +136,11 @@ jobs:
             docker compose -f $DOCKER_COMPOSE_FILE up -d
             docker compose -f $DOCKER_COMPOSE_FILE exec ls -la
             echo "Running tests with docker compose run and pytest..."
-            docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest
+            docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest $APP_DIR
             echo "Running tests with docker compose run and manage.py test..."
-            docker compose -f $DOCKER_COMPOSE_FILE run --rm web manage.py test
+            docker compose -f $DOCKER_COMPOSE_FILE run --rm web manage.py test $APP_DIR
             echo "Running tests with EXEC..."
-            docker compose -f $DOCKER_COMPOSE_FILE exec web poetry run pytest
+            docker compose -f $DOCKER_COMPOSE_FILE exec web poetry run pytest $APP_DIR
             docker compose -f $DOCKER_COMPOSE_FILE down
       - store_artifacts: # upload test summary for display in Artifacts
           path: $WORKSPACE_DIR/test_results
