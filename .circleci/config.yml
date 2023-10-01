@@ -121,10 +121,11 @@ jobs:
           command: |
             pwd
             mkdir -p << pipeline.parameters.workspace_dir >>/test_results
+            ls -la
             ls -la << pipeline.parameters.workspace_dir >>/project
             cat << pipeline.parameters.workspace_dir >>/project/compose.yaml
             echo "Docker compose config parsed..."
-            docker compose config
+            docker compose config -f << pipeline.parameters.workspace_dir >>/project/compose.yaml
             echo "Waiting for services to start..."
             docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             docker compose exec ls -la
@@ -197,8 +198,6 @@ workflows:
           name: Unit testing
           requires:
             - Validate requirements
-            - Ruff linting
-            - Black formatting
 
       - persist-checkout:
           requires:

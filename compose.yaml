@@ -15,7 +15,7 @@ services:
   postgres:
     container_name: postgres_container
     image: postgres:14.5
-    logging: *default-logging      
+    logging: *default-logging
     restart: always
     ports:
       - '5432:5432'
