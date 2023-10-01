@@ -41,6 +41,6 @@ RUN poetry config virtualenvs.create false && \
 COPY . /app
 
 RUN poetry config virtualenvs.create false && \
-    poetry install --quiet --no-cache --no-interaction --no-ansi --with dev,test
+    poetry install --with dev,test
 
 # COPY . .
