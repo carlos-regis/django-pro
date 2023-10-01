@@ -147,7 +147,7 @@ jobs:
       TEST_RESULTS: << pipeline.parameters.workspace_dir >>/test-results
 
     steps:
-      - *fast-checkout
+      #- *fast-checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - attach_workspace:
@@ -160,7 +160,7 @@ jobs:
             pwd
             ls -la $HOME/project
             ls -la << pipeline.parameters.workspace_dir >>/image
-            mkdir -p ${TEST_RESULTS}
+            # mkdir -p ${TEST_RESULTS}
             echo "Waiting for services to start..."
             docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             echo "Running tests..."
