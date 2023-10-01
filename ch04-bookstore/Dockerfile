@@ -36,6 +36,11 @@ COPY ./poetry.lock ./pyproject.toml ./
 
 # Install only the package dependencies here
 RUN poetry config virtualenvs.create false && \
-    poetry install --quiet --no-cache --no-interaction --no-root --no-ansi --with dev,test
+    poetry install --quiet --no-interaction --no-root --no-directory --no-ansi
 
-COPY . .
+COPY . /app
+
+RUN poetry config virtualenvs.create false && \
+    poetry install --quiet --no-cache --no-interaction --no-ansi --with dev,test
+
+# COPY . .
