@@ -128,17 +128,14 @@ jobs:
           command: |
             mkdir -p $WORKSPACE_DIR/test_results
             ls -la $WORKSPACE_DIR/project
-            echo "Compose file: $DOCKER_COMPOSE_FILE"
-            echo "Parsing docker compose config file..."
-            DJANGO_APP_NAME=$APP_NAME docker compose -f $DOCKER_COMPOSE_FILE config
-            echo "Waiting for services to start..."
-            docker compose -f $DOCKER_COMPOSE_FILE up -d
-            docker compose -f $DOCKER_COMPOSE_FILE exec ls -la
-            echo "Running tests with docker compose run and pytest..."
+            echo "*** Waiting for services to start..."
+            DJANGO_APP_NAME=$APP_NAME docker compose -f $DOCKER_COMPOSE_FILE up -d
+            docker compose -f $DOCKER_COMPOSE_FILE exec web ls -la
+            echo "*** Running tests with docker compose run and pytest..."
             docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest $APP_DIR
-            echo "Running tests with docker compose run and manage.py test..."
+            echo "*** Running tests with docker compose run and manage.py test..."
             docker compose -f $DOCKER_COMPOSE_FILE run --rm web manage.py test $APP_DIR
-            echo "Running tests with EXEC..."
+            echo "*** Running tests with EXEC..."
             docker compose -f $DOCKER_COMPOSE_FILE exec web poetry run pytest $APP_DIR
             docker compose -f $DOCKER_COMPOSE_FILE down
       - store_artifacts: # upload test summary for display in Artifacts
