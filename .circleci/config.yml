@@ -21,9 +21,6 @@ parameters:
   workspace_dir:
     type: string
     default: /tmp/workspace
-  test_results_dir:
-    type: string
-    default: << pipeline.parameters.workspace_dir >>/test_result
 
 aliases:
   - &python-executor
@@ -95,19 +92,6 @@ jobs:
           name: Diff-based black
           command: *display-lint-errors
 
-  # test:
-  #   executor: *python-executor
-  #   steps:
-  #     - checkout
-  #     - python/install-packages:
-  #         args: "--no-interaction --no-root --only test"
-  #         pkg-manager: poetry
-  #     - run:
-  #         command: |
-  #           docker-composer exec web poetry run pytest << pipeline.parameters.app_dir >>
-  #     - store_test_results:
-  #         path: .
-
   persist-checkout:
     executor: app-executor
     steps:
@@ -120,6 +104,36 @@ jobs:
           paths:
             - project
             - env
+
+  test:
+    executor: app-executor
+
+    parallelism: 2
+
+    steps:
+      #- *fast-checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: << pipeline.parameters.workspace_dir >>
+      - run:
+          name: Unit tests
+          command: |
+            # source << pipeline.parameters.workspace_dir >>/env
+            # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
+            pwd
+            mkdir -p << pipeline.parameters.workspace_dir >>/test_results
+            echo "Waiting for services to start..."
+            docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
+            echo "Running tests..."
+            docker-compose exec ls -la
+            docker-compose run --rm django pytest
+            # docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
+      - store_artifacts: # upload test summary for display in Artifacts
+          path: << pipeline.parameters.workspace_dir >>/test_results
+          destination: raw-test-output
+      - store_test_results:
+          path: << pipeline.parameters.workspace_dir >>/test_results
 
   build:
     executor: app-executor
@@ -141,39 +155,6 @@ jobs:
           paths:
             - image/<< pipeline.parameters.app_name >>.tar
 
-  test:
-    executor: app-executor
-
-    parallelism: 2
-
-    environment:
-      TEST_RESULTS: << pipeline.parameters.workspace_dir >>/test-results
-
-    steps:
-      #- *fast-checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - attach_workspace:
-          at: << pipeline.parameters.workspace_dir >>
-      - run:
-          name: Unit tests
-          command: |
-            # source << pipeline.parameters.workspace_dir >>/env
-            # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
-            pwd
-            ls -la $HOME/project
-            ls -la << pipeline.parameters.workspace_dir >>/image
-            mkdir -p << pipeline.parameters.test_results_dir >>
-            echo "Waiting for services to start..."
-            docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
-            echo "Running tests..."
-            docker-compose run --rm django pytest
-            # docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
-      - store_artifacts: # upload test summary for display in Artifacts
-          path: << pipeline.parameters.test_results_dir >>
-          destination: raw-test-output
-      - store_test_results:
-          path: << pipeline.parameters.test_results_dir >>
 
   push:
     executor: app-executor
@@ -211,27 +192,21 @@ workflows:
           requires:
             - Validate requirements
 
-      # - test:
-      #     name: Unit testing
-      #     filters: *ci-filter
-      #     requires:
-      #       - Ruff linting
-      #       - Black formatting
-
-      - persist-checkout:
+      - test:
+          name: Unit testing
           requires:
             - Ruff linting
             - Black formatting
+
+      - persist-checkout:
+          requires:
+            - Unit testing
 
       - build:
           context:
             - Common Env
           requires:
             - persist-checkout
-
-      - test:
-          requires:
-            - build
 
       # - approval:
       #     type: approval
@@ -242,4 +217,4 @@ workflows:
           context:
             - Common Env
           requires:
-            - test
+            - build
