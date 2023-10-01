@@ -31,6 +31,9 @@ services:
     container_name: web-container
     logging: *default-logging
     restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     volumes:
