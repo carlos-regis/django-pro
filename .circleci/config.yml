@@ -129,8 +129,8 @@ jobs:
 
     # parallelism: 2
 
-    environment:
-      TEST_RESULTS: /tmp/test-results
+    # environment:
+    #   TEST_RESULTS: /tmp/test-results
 
     steps:
       - *fast-checkout
@@ -163,11 +163,11 @@ jobs:
 
             echo "*** Running tests with EXEC..."
             docker compose down
-      - store_artifacts:
-          path: $TEST_RESULTS
-          destination: raw-test-output
-      - store_test_results:
-          path: $TEST_RESULTS
+      # - store_artifacts:
+      #     path: $TEST_RESULTS
+      #     destination: raw-test-output
+      # - store_test_results:
+      #     path: $TEST_RESULTS
 
   push:
     executor: app-executor
