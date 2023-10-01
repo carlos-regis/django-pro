@@ -21,6 +21,9 @@ parameters:
   workspace_dir:
     type: string
     default: /tmp/workspace
+  test_results_dir:
+    type: string
+    default: << pipeline.parameters.workspace_dir >>/test_result
 
 aliases:
   - &python-executor
@@ -160,17 +163,17 @@ jobs:
             pwd
             ls -la $HOME/project
             ls -la << pipeline.parameters.workspace_dir >>/image
-            # mkdir -p ${TEST_RESULTS}
+            mkdir -p << pipeline.parameters.test_results_dir >>
             echo "Waiting for services to start..."
             docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             echo "Running tests..."
-            # docker-compose run --rm django pytest
+            docker-compose run --rm django pytest
             # docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
-      # - store_artifacts: # upload test summary for display in Artifacts
-      #     path: $TEST_RESULTS
-      #     destination: raw-test-output
-      # - store_test_results:
-      #     path: $TEST_RESULTS
+      - store_artifacts: # upload test summary for display in Artifacts
+          path: << pipeline.parameters.test_results_dir >>
+          destination: raw-test-output
+      - store_test_results:
+          path: << pipeline.parameters.test_results_dir >>
 
   push:
     executor: app-executor
