@@ -124,8 +124,8 @@ jobs:
             docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             echo "Running tests..."
             # docker compose exec ls -la
-            # docker compose run --rm django pytest
-            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml exec web poetry run pytest << pipeline.parameters.app_dir >>
+            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml run --rm django pytest
+            # docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml exec web poetry run pytest << pipeline.parameters.app_dir >>
       - store_artifacts: # upload test summary for display in Artifacts
           path: << pipeline.parameters.workspace_dir >>/test_results
           destination: raw-test-output
