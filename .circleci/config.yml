@@ -147,7 +147,7 @@ jobs:
           command: |
             mkdir -p $TEST_RESULTS
             cd $WORKSPACE_DIR/project/$APP_DIR
-            DJANGO_APP_NAME=$APP_NAME docker compose up -d --build
+            DJANGO_APP_NAME=$APP_NAME docker compose up -d
             docker compose exec web poetry -V
             docker compose exec web poetry install --with test,dev
             #docker compose exec web poetry run python -m django --version
@@ -204,20 +204,18 @@ workflows:
           name: Black formatting
           filters: *ci-filter
 
-      - test:
-          name: Unit testing
-          requires:
-            - Validate requirements
-
-      - persist-checkout:
-          requires:
-            - Unit testing
+      - persist-checkout
 
       - build:
           context:
             - Django-Pro
           requires:
             - persist-checkout
+
+      - test:
+          name: Unit testing
+          requires:
+            - build
 
       # - approval:
       #     type: approval
