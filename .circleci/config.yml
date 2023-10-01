@@ -18,6 +18,9 @@ parameters:
   app_name:
     type: string
     default: django-pro
+  workspace_dir:
+    type: string
+    default: /tmp/workspace
 
 aliases:
   - &python-executor
@@ -26,7 +29,7 @@ aliases:
 
 fast-checkout: &fast-checkout
   attach_workspace:
-    at: /tmp/workspace
+    at: << pipeline.parameters.workspace_dir >>
 
 jobs:
   requirements:
@@ -125,13 +128,13 @@ jobs:
           name: Build Django image
           command: |
             set -ex
-            cd /tmp/workspace/project
-            source /tmp/workspace/env
+            cd << pipeline.parameters.workspace_dir >>/project
+            source << pipeline.parameters.workspace_dir >>/env
             docker build -t $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG .
-            mkdir -p /tmp/workspace/image
-            docker save -o /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG
+            mkdir -p << pipeline.parameters.workspace_dir >>/image
+            docker save -o << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: << pipeline.parameters.workspace_dir >>
           paths:
             - image/<< pipeline.parameters.app_name >>.tar
 
@@ -141,23 +144,26 @@ jobs:
     parallelism: 2
 
     environment:
-      TEST_RESULTS: /tmp/workspace/test-results
+      TEST_RESULTS: << pipeline.parameters.workspace_dir >>/test-results
 
     steps:
       - setup_remote_docker:
           docker_layer_caching: true
       - attach_workspace:
-          at: /tmp/workspace
+          at: << pipeline.parameters.workspace_dir >>
       - run:
           name: Unit tests
           command: |
-            # source /tmp/workspace/env
-            # docker load -i /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar
-            ls -la /tmp/workspace/image
+            # source << pipeline.parameters.workspace_dir >>/env
+            # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
+            ls -la << pipeline.parameters.workspace_dir >>/image
             mkdir -p $TEST_RESULTS
-            docker-compose -f /tmp/workspace/project/compose.yaml up -d
+            docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             # docker-compose run --rm django pytest
             docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
+      - store_artifacts: # upload test summary for display in Artifacts
+          path: $TEST_RESULTS
+          destination: raw-test-output
       - store_test_results:
           path: $TEST_RESULTS
 
@@ -167,12 +173,12 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - attach_workspace:
-          at: /tmp/workspace
+          at: << pipeline.parameters.workspace_dir >>
       - run:
           name: Push django image
           command: |
-            source /tmp/workspace/env
-            docker load -i /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar
+            source << pipeline.parameters.workspace_dir >>/env
+            docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
             echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
             docker push $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG
 
