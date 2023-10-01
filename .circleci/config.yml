@@ -119,16 +119,19 @@ jobs:
       - run:
           name: Unit tests
           command: |
-            # source << pipeline.parameters.workspace_dir >>/env
-            # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
+            pwd
             mkdir -p << pipeline.parameters.workspace_dir >>/test_results
             ls -la << pipeline.parameters.workspace_dir >>/project
             cat << pipeline.parameters.workspace_dir >>/project/compose.yaml
+            echo "Docker compose config parsed..."
+            docker compose config
             echo "Waiting for services to start..."
             docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             docker compose exec ls -la
-            echo "Running tests with RUN..."
+            echo "Running tests with docker compose run and pytest..."
             docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml run --rm web pytest
+             echo "Running tests with docker compose run and manage.py test..."
+            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml run --rm web manage.py test
             echo "Running tests with EXEC..."
             docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml exec web poetry run pytest
       - store_artifacts: # upload test summary for display in Artifacts

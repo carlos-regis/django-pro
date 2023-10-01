@@ -1,7 +1,5 @@
-# Pull base python image
 FROM python:3.11.5-slim-bullseye
 
-# Set environment variables
 ENV \
     # Python
     PYTHONFAULTHANDLER=1 \
@@ -20,11 +18,6 @@ ENV \
     POETRY_CACHE_DIR='/var/cache/pypoetry' \
     POETRY_HOME='/usr/local'
 
-# Path
-# ENV PATH='$POETRY_HOME/bin:$PATH'
-# PYTHONPATH='$PYTHONPATH:.'
-
-# Work directory
 WORKDIR /app
 
 # System dependencies
@@ -39,12 +32,10 @@ RUN apt-get update && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Poetry dependencies
 COPY ./poetry.lock ./pyproject.toml ./
 
 # Install only the package dependencies here
 RUN poetry config virtualenvs.create false && \
     poetry install --quiet --no-cache --no-interaction --no-root --no-ansi --with dev,test
 
-# Copy project
 COPY . .
