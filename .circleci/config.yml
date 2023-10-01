@@ -127,7 +127,8 @@ jobs:
             echo "Running tests..."
             # docker-compose exec ls -la
             # docker-compose run --rm django pytest
-            docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
+            docker-compose exec web poetry run pytest
+            #<< pipeline.parameters.app_dir >>
       - store_artifacts: # upload test summary for display in Artifacts
           path: << pipeline.parameters.workspace_dir >>/test_results
           destination: raw-test-output
@@ -182,18 +183,15 @@ workflows:
       - lint:
           name: Ruff linting
           filters: *ci-filter
-          requires:
-            - Validate requirements
 
       - format:
           name: Black formatting
           filters: *ci-filter
-          requires:
-            - Validate requirements
 
       - test:
           name: Unit testing
           requires:
+            - Validate requirements
             - Ruff linting
             - Black formatting
 
