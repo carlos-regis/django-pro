@@ -156,9 +156,9 @@ jobs:
           command: |
             # source << pipeline.parameters.workspace_dir >>/env
             # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
+            pwd
             echo "Running tests..."
             ls -la .
-            ls -la /app
             ls -la $HOME
             ls -la << pipeline.parameters.workspace_dir >>/image
             mkdir -p $TEST_RESULTS
