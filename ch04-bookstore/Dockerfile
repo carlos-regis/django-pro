@@ -35,12 +35,10 @@ RUN apt-get update && \
 COPY ./poetry.lock ./pyproject.toml ./
 
 # Install only the package dependencies here
-RUN poetry config virtualenvs.create false && \
-    poetry install --quiet --no-interaction --no-root --no-directory --no-ansi
+RUN poetry install --quiet --no-root --no-directory --no-ansi
 
 COPY . /app
 
-RUN poetry config virtualenvs.create false && \
-    poetry install --with dev,test
+RUN poetry install 
 
 # COPY . .
