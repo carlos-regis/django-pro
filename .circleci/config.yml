@@ -131,7 +131,7 @@ jobs:
           command: |
             mkdir -p $TEST_RESULTS
             cd $WORKSPACE_DIR/project/$APP_DIR && pwd && ls -la
-            poetry run pytest -V
+            pytest -V
             echo "*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose up -d
             docker-compose exec web ls -la /app
