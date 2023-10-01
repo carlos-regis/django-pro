@@ -8,7 +8,7 @@ executors:
     parameters:
       app-name:
         type: string
-        default: django-pro
+        default: bookstore
       workspace-dir:
         type: string
         default: /tmp/workspace
@@ -17,7 +17,7 @@ executors:
         default: /tmp/workspace/project/compose.yaml
       app-dir:
         type: string
-        default: ch04-bookstore
+        default: "ch04-bookstore"
     environment:
       WORKSPACE_DIR: << parameters.workspace-dir >>
       APP_NAME: << parameters.app-name >>
@@ -128,17 +128,18 @@ jobs:
           command: |
             mkdir -p $WORKSPACE_DIR/test_results
             ls -la $WORKSPACE_DIR/project
-            echo "*** Waiting for services to start..."
+            echo "\n*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose -f $DOCKER_COMPOSE_FILE up -d
             docker compose -f $DOCKER_COMPOSE_FILE exec web ls -la
-            echo "*** Running tests with docker compose run and pytest..."
+            echo "\n*** App directory: $APP_DIR ..."
+            echo "\n*** Running tests with docker compose run and pytest..."
             docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest $APP_DIR
-            echo "*** Running tests with docker compose run and manage.py test..."
+            echo "\n*** Running tests with docker compose run and manage.py test..."
             docker compose -f $DOCKER_COMPOSE_FILE run --rm web manage.py test $APP_DIR
-            echo "*** Running tests with EXEC..."
+            echo "\n*** Running tests with EXEC..."
             docker compose -f $DOCKER_COMPOSE_FILE exec web poetry run pytest $APP_DIR
             docker compose -f $DOCKER_COMPOSE_FILE down
-      - store_artifacts: # upload test summary for display in Artifacts
+      - store_artifacts:
           path: $WORKSPACE_DIR/test_results
           destination: raw-test-output
       - store_test_results:
@@ -208,7 +209,7 @@ workflows:
 
       - build:
           context:
-            - Common Env
+            - Django-Pro
           requires:
             - persist-checkout
 
@@ -219,6 +220,6 @@ workflows:
 
       - push:
           context:
-            - Common Env
+            - Django-Pro
           requires:
             - build
