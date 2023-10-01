@@ -125,7 +125,7 @@ jobs:
             ls -la << pipeline.parameters.workspace_dir >>/project
             cat << pipeline.parameters.workspace_dir >>/project/compose.yaml
             echo "Docker compose config parsed..."
-            docker compose config -f << pipeline.parameters.workspace_dir >>/project/compose.yaml
+            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml config
             echo "Waiting for services to start..."
             docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             docker compose exec ls -la
