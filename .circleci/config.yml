@@ -6,15 +6,12 @@ orbs:
 executors:
   app-executor:
     parameters:
-      app-name:
-        type: string
-        default: bookstore
       workspace-dir:
         type: string
         default: /tmp/workspace
-      docker-compose-file:
+      app-name:
         type: string
-        default: compose.yaml
+        default: bookstore
       app-dir:
         type: string
         default: "ch04-bookstore"
@@ -22,7 +19,6 @@ executors:
       WORKSPACE_DIR: << parameters.workspace-dir >>
       APP_NAME: << parameters.app-name >>
       APP_DIR: << parameters.app-dir >>
-      DOCKER_COMPOSE_FILE: << parameters.docker-compose-file >>
     docker:
       - image: cimg/python:3.11
         auth:
@@ -134,8 +130,8 @@ jobs:
             echo "*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose up -d
             docker-compose exec web pwd
-            docker-compose exec web ls -la /app
-            docker-compose exec web pytest -V
+            docker-compose exec web ls -la /
+            docker-compose exec web poetry -V
             echo "*** Running tests with docker compose exec, poetry, and django unittest..."
             docker-compose -f $DOCKER_COMPOSE_FILE exec web poetry run python manage.py test
             echo "*** Running tests with docker compose run and pytest..."
