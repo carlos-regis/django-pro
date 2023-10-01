@@ -156,21 +156,20 @@ jobs:
           command: |
             # source << pipeline.parameters.workspace_dir >>/env
             # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
-            pwd
             echo "Running tests..."
-            ls -la .
-            ls -la $HOME
+            pwd
+            ls -la $HOME/project
             ls -la << pipeline.parameters.workspace_dir >>/image
-            mkdir -p $TEST_RESULTS
-            docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
+            mkdir -p ${TEST_RESULTS}
             echo "Waiting for services to start..."
+            docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             # docker-compose run --rm django pytest
-            # docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
-      - store_artifacts: # upload test summary for display in Artifacts
-          path: $TEST_RESULTS
-          destination: raw-test-output
-      - store_test_results:
-          path: $TEST_RESULTS
+            docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
+      # - store_artifacts: # upload test summary for display in Artifacts
+      #     path: $TEST_RESULTS
+      #     destination: raw-test-output
+      # - store_test_results:
+      #     path: $TEST_RESULTS
 
   push:
     executor: app-executor
@@ -215,7 +214,10 @@ workflows:
       #       - Ruff linting
       #       - Black formatting
 
-      - persist-checkout
+      - persist-checkout:
+          requires:
+            - Ruff linting
+            - Black formatting
 
       - build:
           context:
