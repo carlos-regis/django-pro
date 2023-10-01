@@ -44,10 +44,6 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            # $HOME = /home/circleci
-            # pwd = /home/circleci/project
-            echo $HOME
-            pwd
             poetry check
       - persist_to_workspace:
           root: /home/circleci
@@ -131,7 +127,7 @@ jobs:
   test:
     executor: app-executor
 
-    parallelism: 2
+    # parallelism: 2
 
     environment:
       TEST_RESULTS: /tmp/test-results
