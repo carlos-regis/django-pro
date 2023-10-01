@@ -119,7 +119,8 @@ jobs:
     executor: app-executor
     steps:
       - *fast-checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Build Django image
           command: |
@@ -127,7 +128,6 @@ jobs:
             cd /tmp/workspace/project
             source /tmp/workspace/env
             docker build -t $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG .
-            docker images -a
             mkdir -p /tmp/workspace/image
             docker save -o /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar $DOCKER_USER/<< pipeline.parameters.app_name >>:$IMAGE_TAG
       - persist_to_workspace:
@@ -135,10 +135,30 @@ jobs:
           paths:
             - image/<< pipeline.parameters.app_name >>.tar
 
+  test:
+    executor: app-executor
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Test django image
+          command: |
+            # source /tmp/workspace/env
+            # docker load -i /tmp/workspace/image/<< pipeline.parameters.app_name >>.tar
+            pwd
+            docker-compose -f /tmp/workspace/project/docker-compose.yml up -d
+            # docker-compose run --rm django pytest
+            docker-compose exec web poetry run pytest << pipeline.parameters.app_dir >>
+      - store_test_results:
+          path: test-results
+
   push:
     executor: app-executor
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - attach_workspace:
           at: /tmp/workspace
       - run:
@@ -185,13 +205,17 @@ workflows:
           requires:
             - persist-checkout
 
-      - approval:
-          type: approval
+      - test:
           requires:
             - build
+
+      # - approval:
+      #     type: approval
+      #     requires:
+      #       - build
 
       - push:
           context:
             - Common Env
-          requires:
-            - approval
+          # requires:
+          #   - approval
