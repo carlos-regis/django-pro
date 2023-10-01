@@ -79,7 +79,7 @@ jobs:
             grep -Ff diff.txt lint_checks.txt > lint_errors.txt || true
             if [ -s lint_errors.txt ]; then
               cat lint_errors.txt
-              printf 'Run the following command to fix your branch:\n make fixes'
+              printf 'Run the following command to fix your branch: make fixes'
               exit 1
             fi
 
@@ -128,16 +128,17 @@ jobs:
           command: |
             mkdir -p $WORKSPACE_DIR/test_results
             ls -la $WORKSPACE_DIR/project
-            echo "\n*** Waiting for services to start..."
+            echo "*** Waiting for services to start..."
             DJANGO_APP_NAME=$APP_NAME docker compose -f $DOCKER_COMPOSE_FILE up -d
             docker compose -f $DOCKER_COMPOSE_FILE exec web ls -la
-            echo "\n*** App directory: $APP_DIR ..."
-            echo "\n*** Running tests with docker compose run and pytest..."
-            docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest
-            echo "\n*** Running tests with docker compose run and manage.py test..."
-            docker compose -f $DOCKER_COMPOSE_FILE run --rm web manage.py test
-            echo "\n*** Running tests with EXEC..."
+            echo "*** App directory: $APP_DIR ..."
+            echo "*** Running tests with docker compose exec, poetry, and pytest..."
             docker compose -f $DOCKER_COMPOSE_FILE exec web poetry run pytest
+            echo "*** Running tests with docker compose run and pytest..."
+            docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest
+            echo "*** Running tests with docker compose run and manage.py test..."
+            docker compose -f $DOCKER_COMPOSE_FILE run --rm web manage.py test
+            echo "*** Running tests with EXEC..."
             docker compose -f $DOCKER_COMPOSE_FILE down
       - store_artifacts:
           path: $WORKSPACE_DIR/test_results
