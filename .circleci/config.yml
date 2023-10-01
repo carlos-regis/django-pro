@@ -130,13 +130,10 @@ jobs:
           name: Unit tests
           command: |
             mkdir -p $TEST_RESULTS
-            cd $WORKSPACE_DIR/project
-            ls -la
-            cd $APP_DIR && pwd && ls -la
+            cd $WORKSPACE_DIR/project/$APP_DIR && pwd && ls -la
             echo "*** Waiting for services to start..."
-            DJANGO_APP_NAME=$APP_NAME docker compose -f $DOCKER_COMPOSE_FILE up -d
-            docker compose -f $DOCKER_COMPOSE_FILE exec web ls -la
-            echo "*** App directory: $APP_DIR ..."
+            DJANGO_APP_NAME=$APP_NAME docker compose up -d
+            echo "*** Running tests with docker compose exec, poetry, and django unittest..."
             docker-compose -f $DOCKER_COMPOSE_FILE exec web poetry run python manage.py test
             echo "*** Running tests with docker compose run and pytest..."
             docker compose -f $DOCKER_COMPOSE_FILE run --rm web pytest ch04-bookstore
