@@ -111,11 +111,9 @@ jobs:
     parallelism: 2
 
     steps:
-      #- *fast-checkout
+      - *fast-checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - attach_workspace:
-          at: << pipeline.parameters.workspace_dir >>
       - run:
           name: Unit tests
           command: |
@@ -123,12 +121,11 @@ jobs:
             # docker load -i << pipeline.parameters.workspace_dir >>/image/<< pipeline.parameters.app_name >>.tar
             mkdir -p << pipeline.parameters.workspace_dir >>/test_results
             echo "Waiting for services to start..."
-            docker-compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
+            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml up -d
             echo "Running tests..."
-            # docker-compose exec ls -la
-            # docker-compose run --rm django pytest
-            docker-compose exec web poetry run pytest
-            #<< pipeline.parameters.app_dir >>
+            # docker compose exec ls -la
+            # docker compose run --rm django pytest
+            docker compose -f << pipeline.parameters.workspace_dir >>/project/compose.yaml exec web poetry run pytest << pipeline.parameters.app_dir >>
       - store_artifacts: # upload test summary for display in Artifacts
           path: << pipeline.parameters.workspace_dir >>/test_results
           destination: raw-test-output
