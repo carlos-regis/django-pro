@@ -126,11 +126,9 @@ jobs:
 
   test:
     executor: app-executor
-
-    # parallelism: 2
-
-    # environment:
-    #   TEST_RESULTS: /tmp/test-results
+    parallelism: 2
+    environment:
+      TEST_RESULTS: /tmp/test-results
 
     steps:
       - *fast-checkout
@@ -144,8 +142,8 @@ jobs:
             mkdir -p $TEST_RESULTS
             cd $WORKSPACE_DIR/project/$APP_DIR
             DJANGO_APP_NAME=$APP_NAME docker compose up -d
-            docker compose exec web poetry -V
-            docker compose exec web poetry install --with test,dev
+            docker compose exec django python -V && poetry -V
+            docker compose exec django poetry install --with test,dev
 
             #docker compose exec web poetry run python -m django --version
 
