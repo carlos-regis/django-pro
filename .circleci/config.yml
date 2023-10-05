@@ -5,110 +5,182 @@ orbs:
 
 executors:
   app-executor:
+    parameters:
+      workspace-dir:
+        type: string
+        default: /tmp/workspace
+      app-name:
+        type: string
+        default: bookstore
+      app-dir:
+        type: string
+        default: "ch04-bookstore"
+    environment:
+      WORKSPACE_DIR: << parameters.workspace-dir >>
+      APP_NAME: << parameters.app-name >>
+      APP_DIR: << parameters.app-dir >>
     docker:
       - image: cimg/python:3.11
-      # @ 13-Sep-23:
-      # ubuntu 22.04.2 LTS | python3 3.11.5 | poetry 1.6.1
-    working_directory: ~/app
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
 
 aliases:
-  - &install-dependencies
-    run:
-      name: Install dependencies
-      command: poetry install
+  - &python-executor
+      name: python/default
+      tag: "3.11"
 
-  - &install-dev-dependencies
-    run:
-      name: Install dev dependencies
-      command: poetry install --only dev
-
-  - &install-test-dependencies
-    run:
-      name: Install test dependencies
-      command: poetry install --only test
-
-  - &build-project
-    run:
-      name: Build Project
-      command: poetry install
+fast-checkout: &fast-checkout
+  attach_workspace:
+    at: /tmp/workspace/
 
 jobs:
   requirements:
-    executor: app-executor
+    executor: *python-executor
     steps:
       - checkout
       - python/install-packages:
+          args: "--no-interaction --no-root"
           pkg-manager: poetry
       - run:
-          name: Requirements check
           command: |
-            python -V
-            poetry -V
+            poetry check
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
 
   lint:
-    # executor: app-executor
-    executor: &python-executor
-      name: python/default
-      tag: "3.11"
+    executor: *python-executor
     steps:
       - checkout
-      - *install-dev-dependencies
+      - python/install-packages:
+          args: "--no-interaction --no-root --only dev"
+          pkg-manager: poetry
       - run: &git-diff-py-files
           name: List added, copied, modified, and renamed *py files
-          command: git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
+          command: |
+            git diff --name-only --diff-filter=ACMR origin/main | grep -E "(.py$)" > diff.txt || true
       - run:
           name: Ruff linting
-          command: poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
+          command: |
+            poetry run ruff check --config=pyproject.toml . &> lint_checks.txt || true
       - run:
           name: Diff-based ruff
           command: &display-lint-errors |
             grep -Ff diff.txt lint_checks.txt > lint_errors.txt || true
             if [ -s lint_errors.txt ]; then
               cat lint_errors.txt
-              printf 'Run the following command to fix your branch:\n make fixes'
+              printf 'Run the following command to fix your branch: make fixes'
               exit 1
             fi
 
   format:
-    # executor: app-executor
-    executor: *python-executor
-    steps:
-      - checkout
-      - *install-dev-dependencies
-      - run: *git-diff-py-files
-      - run:
-          name: Black style formatting
-          command: |
-            python -V
-            poetry -V
-            poetry run black . --check --diff --color --config=pyproject.toml &> lint_checks.txt || true
-      - run:
-          name: Diff-based black
-          command: *display-lint-errors
-
-  test:
-    # executor: app-executor
     executor: *python-executor
     steps:
       - checkout
       - python/install-packages:
+          args: "--no-interaction --no-root --only dev"
           pkg-manager: poetry
+      - run: *git-diff-py-files
       - run:
-          name: Unit testing
+          name: Black code formatting
           command: |
-            python -V
-            poetry -V
+            poetry run black --check --diff --color --config=pyproject.toml . &> lint_checks.txt || true
+      - run:
+          name: Diff-based black
+          command: *display-lint-errors
+
+  persist-checkout:
+    executor: app-executor
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo "IMAGE_TAG=$(echo `git log -n1 --format="%h"`)" >> $HOME/env
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
+            - env
 
   build:
     executor: app-executor
     steps:
-      - checkout
-      - *install-dependencies
+      - *fast-checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
-          name: Build
+          name: Build Django image
           command: |
-            python -V
-            poetry -V
+            set -ex
+            cd $WORKSPACE_DIR/project
+            source $WORKSPACE_DIR/env
+            docker build -t $DOCKER_USER/$APP_NAME:$IMAGE_TAG .
+            mkdir -p $WORKSPACE_DIR/image
+            docker save -o $WORKSPACE_DIR/image/$APP_NAME.tar $DOCKER_USER/$APP_NAME:$IMAGE_TAG
+      - persist_to_workspace:
+          root: $WORKSPACE_DIR
+          paths:
+            - image/$APP_NAME.tar
+
+  test:
+    executor: app-executor
+    parallelism: 2
+    environment:
+      TEST_RESULTS: /tmp/test-results
+
+    steps:
+      - *fast-checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: $WORKSPACE_DIR
+      - run:
+          name: Unit tests
+          command: |
+            mkdir -p $TEST_RESULTS
+            cd $WORKSPACE_DIR/project/$APP_DIR
+            DJANGO_APP_NAME=$APP_NAME docker compose up -d
+            docker compose exec django python -V && poetry -V
+            docker compose exec django poetry install --with test,dev
+
+            #docker compose exec web poetry run python -m django --version
+
+            echo "*** Running tests with docker compose exec, poetry, and django unittest..."
+            docker compose exec web poetry run python manage.py test
+
+            echo "*** Running tests with docker compose run and pytest..."
+            docker compose run --rm web pytest ch04-bookstore
+
+            echo "*** Running tests with docker compose exec, poetry, and pytest..."
+            docker compose exec web poetry run pytest
+
+            echo "*** Running tests with docker compose run and manage.py test..."
+            docker compose run --rm web manage.py test
+
+            echo "*** Running tests with EXEC..."
+            docker compose down
+      # - store_artifacts:
+      #     path: $TEST_RESULTS
+      #     destination: raw-test-output
+      # - store_test_results:
+      #     path: $TEST_RESULTS
+
+  push:
+    executor: app-executor
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: $WORKSPACE_DIR
+      - run:
+          name: Push django image
+          command: |
+            source $WORKSPACE_DIR/env
+            docker load -i $WORKSPACE_DIR/image/$APP_NAME.tar
+            echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
+            docker push $DOCKER_USER/$APP_NAME:$IMAGE_TAG
 
 workflows:
   ci:
@@ -118,32 +190,35 @@ workflows:
           filters: &ci-filter
             branches:
               ignore: main
-            tags:
-              ignore: /.*/
 
       - lint:
           name: Ruff linting
           filters: *ci-filter
-          requires:
-            - Validate requirements
 
       - format:
           name: Black formatting
           filters: *ci-filter
+
+      - persist-checkout
+
+      - build:
+          context:
+            - Django-Pro
           requires:
-            - Validate requirements
+            - persist-checkout
 
       - test:
           name: Unit testing
-          filters: *ci-filter
           requires:
-            - Ruff linting
-            - Black formatting
+            - build
 
-  build:
-    jobs:
-      - build
-      - approval:
-          type: approval
+      # - approval:
+      #     type: approval
+      #     requires:
+      #       - build
+
+      - push:
+          context:
+            - Django-Pro
           requires:
             - build
