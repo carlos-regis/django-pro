@@ -9,7 +9,7 @@ repos:
 
   ## Codespell - check for common misspellings in files
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.5
+    rev: v2.2.6
     hooks:
       - id: codespell
         language: python
@@ -21,14 +21,14 @@ repos:
 
   ## Markdown
   - repo: https://github.com/frnmst/md-toc
-    rev: 8.2.0
+    rev: 8.2.3
     hooks:
       - id: md-toc
         args: [-p, 'cmark', '-l6']
 
   ## Python, TOML, Polyglot, Git
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       ### Automatically fix issues
       - id: end-of-file-fixer
@@ -81,7 +81,7 @@ repos:
 
   ## Git
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.10.0
+    rev: v3.20.0
     hooks:
       - id: commitizen
       # - id: commitizen-branch
@@ -92,7 +92,7 @@ repos:
 
   ## CR
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: 1.15.0
+    rev: 1.16.0
     hooks:
     -   id: django-upgrade
         args: [
@@ -100,23 +100,23 @@ repos:
         ]
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: 1.1.0
+    rev: 1.7.0
     hooks:
       - id: pyproject-fmt
 
   # formatter and linter for HTML templates
   - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.34.0
+    rev: v1.34.1
     hooks:
       - id: djlint-django
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.4.48
+    rev: 3.2.45
     hooks:
       - id: checkov
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.291
+    rev: v0.3.4
     hooks:
       - id: ruff
         args: [
@@ -124,7 +124,7 @@ repos:
         ]
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.9.1
+    rev: 24.3.0
     hooks:
     - id: black
       args: [
@@ -142,7 +142,7 @@ repos:
       - black==23.7.0
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
+    rev: 1.7.8
     hooks:
     - id: bandit
       args: ["-c", "pyproject.toml", "-r", ".", ]
