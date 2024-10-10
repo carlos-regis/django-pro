@@ -1,5 +1,5 @@
 # Pull base python image
-FROM python:3.11.5-slim-bullseye
+FROM python:3.12.7-slim-bullseye
 
 # Set environment variables
 ENV \
