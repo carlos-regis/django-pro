@@ -2,14 +2,14 @@ default_language_version:
   python: python3.11
 exclude: .*migrations\/.*|.git
 minimum_pre_commit_version: 3.2.1
-default_stages: [commit, push]
+default_stages: [pre-commit, pre-push]
 
 repos:
   # Automatically fix issues
 
   ## Codespell - check for common misspellings in files
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.5
+    rev: v2.3.0
     hooks:
       - id: codespell
         language: python
@@ -21,35 +21,35 @@ repos:
 
   ## Markdown
   - repo: https://github.com/frnmst/md-toc
-    rev: 8.2.0
+    rev: 9.0.0
     hooks:
       - id: md-toc
         args: [-p, 'cmark', '-l6']
 
   ## Python, TOML, Polyglot, Git
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       ### Automatically fix issues
       - id: end-of-file-fixer
-        stages: [commit]
+        stages: [pre-commit]
       - id: fix-byte-order-marker
       - id: mixed-line-ending
         files: "\\.(py|txt|yaml|json|md|toml|lock|cfg|html|sh|js|yml)$"
         args:
         - --fix=crlf
       - id: trailing-whitespace
-        stages: [commit]
+        stages: [pre-commit]
         args: [ --markdown-linebreak-ext=md ]
         files: "\\.(py|txt|yaml|json|md|toml|lock|cfg|html|sh|js|yml)$"
 
       ### Check for issues
       - id: check-added-large-files
         args: [--enforce-all]
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-case-conflict
       - id: check-executables-have-shebangs
-        stages: [commit]
+        stages: [pre-commit]
       - id: check-merge-conflict
       - id: check-symlinks
       - id: check-toml
@@ -60,7 +60,7 @@ repos:
       - id: detect-private-key
       - id: forbid-submodules
       - id: no-commit-to-branch
-        stages: [commit]
+        stages: [pre-commit]
         args: ['--pattern', '^(?!((fix|feat|refactor|docs)(\/\d+\-)[\w-]+)$).*']
 
       - id: check-yaml
@@ -81,7 +81,7 @@ repos:
 
   ## Git
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.10.0
+    rev: v3.29.1
     hooks:
       - id: commitizen
       # - id: commitizen-branch
@@ -92,7 +92,7 @@ repos:
 
   ## CR
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: 1.15.0
+    rev: 1.22.1
     hooks:
     -   id: django-upgrade
         args: [
@@ -100,23 +100,23 @@ repos:
         ]
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: 1.1.0
+    rev: 2.3.0
     hooks:
       - id: pyproject-fmt
 
   # formatter and linter for HTML templates
   - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.34.0
+    rev: v1.35.2
     hooks:
       - id: djlint-django
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 2.4.48
+    rev: 3.2.260
     hooks:
       - id: checkov
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.291
+    rev: v0.6.9
     hooks:
       - id: ruff
         args: [
@@ -124,7 +124,7 @@ repos:
         ]
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.9.1
+    rev: 24.10.0
     hooks:
     - id: black
       args: [
@@ -135,14 +135,14 @@ repos:
       ]
 
   - repo: https://github.com/adamchainz/blacken-docs
-    rev: 1.16.0
+    rev: 1.19.0
     hooks:
     - id: blacken-docs
       additional_dependencies:
       - black==23.7.0
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
+    rev: 1.7.10
     hooks:
     - id: bandit
       args: ["-c", "pyproject.toml", "-r", ".", ]
